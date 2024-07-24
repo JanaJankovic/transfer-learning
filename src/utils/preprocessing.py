@@ -41,10 +41,9 @@ def create_sequences(data, window_size):
     X = np.array(X)
     y = np.array(y)
     
-    if len(X.shape) == 3 and X.shape[2] == 1:
-        X = X.reshape((X.shape[0], X.shape[1]))
-    if len(y.shape) == 2 and y.shape[1] == 1:
-        y = y.reshape((y.shape[0],))
+
+    X = X.reshape((X.shape[0], X.shape[1], 1))
+    y = y.reshape((y.shape[0], 1))
     
     return X, y
 
@@ -53,5 +52,7 @@ def prepare_data(data, window_size, test_size, scaler_filename):
     
     X_train, y_train = create_sequences(train_data, window_size)
     X_test, y_test = create_sequences(test_data, window_size)
+    
+    print(y_train.shape)
     
     return X_train, y_train, X_test, y_test
