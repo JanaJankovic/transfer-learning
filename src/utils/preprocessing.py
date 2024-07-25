@@ -18,17 +18,24 @@ def sort_extract_price(data, commodity):
     
     return df_avg
 
-def split_train_test(df, test_size, scaler_filename):
-    train_data, test_data = train_test_split(df, test_size=test_size, shuffle=False)
-
+def split_train_val_test(df, test_size, val_size, scaler_filename):
+    # First, split the data into training+validation and test sets
+    train_val_data, test_data = train_test_split(df, test_size=test_size, shuffle=False)
+    
+    # Then, split the training+validation data into training and validation sets
+    train_data, val_data = train_test_split(train_val_data, test_size=val_size/(1 - test_size), shuffle=False)
+    
+    # Standardize the data using the training set
     scaler = StandardScaler()
     train_data_scaled = scaler.fit_transform(train_data)
+    val_data_scaled = scaler.transform(val_data)
     test_data_scaled = scaler.transform(test_data)
-
+    
+    # Save the scaler for later use
     with open(scaler_filename, 'wb') as f:
         pickle.dump(scaler, f)
     
-    return train_data_scaled, test_data_scaled
+    return train_data_scaled, val_data_scaled, test_data_scaled 
     
 def create_sequences(data, window_size):
     X = []
@@ -42,17 +49,16 @@ def create_sequences(data, window_size):
     y = np.array(y)
     
 
-    X = X.reshape((X.shape[0], X.shape[1], 1))
-    y = y.reshape((y.shape[0], 1))
+    X = X.reshape((X.shape[0], X.shape[1]))
+    y = y.reshape((y.shape[0],))
     
     return X, y
 
-def prepare_data(data, window_size, test_size, scaler_filename):
-    train_data, test_data = split_train_test(data, test_size, scaler_filename)
+def prepare_data(data, window_size, test_size, val_size, scaler_filename):
+    train_data, val_data_scaled, test_data = split_train_val_test(data, test_size, val_size, scaler_filename)
     
     X_train, y_train = create_sequences(train_data, window_size)
+    X_val, y_val = create_sequences(val_data_scaled, window_size)
     X_test, y_test = create_sequences(test_data, window_size)
     
-    print(y_train.shape)
-    
-    return X_train, y_train, X_test, y_test
+    return X_train, y_train, X_val, y_val, X_test, y_test

@@ -16,3 +16,6 @@ def get_countries(commodity, country=None):
         return next((dataset for dataset in datasets if dataset['name'] == country), None)
     
     return datasets
+
+def get_scaler_filename(country, commodity):
+    return f'../scalers/{country}-{commodity}-StandardScaler.pkl'
