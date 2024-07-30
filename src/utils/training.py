@@ -4,7 +4,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import SimpleRNN, LSTM, GRU, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
-from sklearn.metrics import mean_squared_error
 import utils.preprocessing as pp
 import utils.evaluation as eval
 import utils.constants as c
@@ -110,7 +109,7 @@ def random_search_rnn(df, param_grid, dataset_info, num_iterations=100):
     for _ in range(num_iterations): 
         params = get_parameters(param_grid)       
         
-        X_train, y_train, X_val, y_val, X_test, y_test = pp.prepare_data(df, params['window_size'], 0.2, 0.1, scaler_path)
+        X_train, y_train, X_val, y_val, X_test, y_test = pp.prepare_data(df, params['window_size'], 0.2, 0.1, scaler_filename=scaler_path)
         
         model = create_simple_rnn_model((params['window_size'], 1), params['neurons_per_layer'], params['num_layers'], params['learning_rate'])
         

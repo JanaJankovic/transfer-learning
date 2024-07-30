@@ -19,3 +19,7 @@ def get_countries(commodity, country=None):
 
 def get_scaler_filename(country, commodity):
     return f'../scalers/{country}-{commodity}-StandardScaler.pkl'
+
+def get_model_filename(country, commodity):
+    return f'../models/{country}-{commodity}-best-model.h5'
+

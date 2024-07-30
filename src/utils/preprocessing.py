@@ -18,14 +18,29 @@ def sort_extract_price(data, commodity):
     
     return df_avg
 
-def split_train_val_test(df, test_size, val_size, scaler_filename):
-    # First, split the data into training+validation and test sets
-    train_val_data, test_data = train_test_split(df, test_size=test_size, shuffle=False)
+def split_train_val_test(df, test_size, val_size, window_size, scaler_filename):  
+    total_data_points = len(df)
     
-    # Then, split the training+validation data into training and validation sets
-    train_data, val_data = train_test_split(train_val_data, test_size=val_size/(1 - test_size), shuffle=False)
+    if total_data_points < 30: 
+       
+        min_data_needed = 3 * (window_size + 1)
+        
+        if total_data_points < min_data_needed:
+            raise ValueError(f"Insufficient data: The dataset must have at least {min_data_needed} instances.")
+
+        test_size = window_size + 1
+        val_size = window_size + 1
+        train_size = total_data_points - (test_size + val_size)
+
+        train_data = df[:train_size]
+        val_data = df[train_size:train_size + val_size]
+        test_data = df[train_size + val_size:]  
+        
+    else:
+        train_val_data, test_data = train_test_split(df, test_size=test_size, shuffle=False)
+        train_data, val_data = train_test_split(train_val_data, test_size=val_size/(1 - test_size), shuffle=False)
     
-    # Standardize the data using the training set
+
     scaler = StandardScaler()
     train_data_scaled = scaler.fit_transform(train_data)
     val_data_scaled = scaler.transform(val_data)
@@ -37,6 +52,7 @@ def split_train_val_test(df, test_size, val_size, scaler_filename):
     
     return train_data_scaled, val_data_scaled, test_data_scaled 
     
+
 def create_sequences(data, window_size):
     X = []
     y = []
@@ -55,7 +71,7 @@ def create_sequences(data, window_size):
     return X, y
 
 def prepare_data(data, window_size, test_size, val_size, scaler_filename):
-    train_data, val_data_scaled, test_data = split_train_val_test(data, test_size, val_size, scaler_filename)
+    train_data, val_data_scaled, test_data = split_train_val_test(data, test_size, val_size, window_size, scaler_filename)
     
     X_train, y_train = create_sequences(train_data, window_size)
     X_val, y_val = create_sequences(val_data_scaled, window_size)

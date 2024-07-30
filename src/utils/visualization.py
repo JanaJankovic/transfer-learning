@@ -28,10 +28,10 @@ def plot_line_charts(dfs, date_column, value_column, titles=None, xlabel='Date',
     plt.show()
     
 def plot_best_model(df, model, param_grid, scaler_filename, title):
-    _, _, _, _, X_test, y_test = pp.prepare_data(df[['usdprice']], param_grid['window_size'], 0.2, 0.1, scaler_filename)
+    _, _, _, _, X_test, _ = pp.prepare_data(df[['usdprice']], param_grid['window_size'], 0.2, 0.1, scaler_filename)
     y_pred = model.predict(X_test)
     
-        # Load the scaler
+    # Load the scaler
     with open(scaler_filename, 'rb') as f:
         scaler = pickle.load(f)
     
@@ -40,12 +40,18 @@ def plot_best_model(df, model, param_grid, scaler_filename, title):
     usdprice = df['usdprice']
     
     # Plotting
-    plt.figure(figsize=(8, 3))
-    plt.plot(dates, usdprice, label='Original Data', color='blue', linewidth=1)
+    plt.figure(figsize=(10, 6))
+    plt.plot(dates, usdprice, label='Actual data', color='blue', linewidth=1)
     
-    # Overlay the predictions on the plot, aligning them with the correct dates
+    # Overlay the predictions on the plot
     test_start_index = len(df) - len(y_pred_original)
-    plt.plot(dates.iloc[test_start_index:], y_pred_original, label='Predictions', color='red', linewidth=1)
+    
+    if len(y_pred_original) == 1:
+        # Plot as a single point
+        plt.plot(dates.iloc[test_start_index:], y_pred_original, 'ro', label='Predicted data')
+    else:
+        # Plot as a line
+        plt.plot(dates.iloc[test_start_index:], y_pred_original, label='Predicted data', color='red', linewidth=2)
     
     # Adding labels and title
     plt.xlabel('Date')
