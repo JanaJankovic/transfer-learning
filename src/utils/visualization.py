@@ -27,7 +27,7 @@ def plot_line_charts(dfs, date_column, value_column, titles=None, xlabel='Date',
     plt.tight_layout()
     plt.show()
     
-def plot_best_model(df, model, param_grid, scaler_filename, title):
+def plot_model_prediction(df, model, param_grid, scaler_filename, title):
     _, _, _, _, X_test, _ = pp.prepare_data(df[['usdprice']], param_grid['window_size'], 0.2, 0.1, scaler_filename)
     y_pred = model.predict(X_test)
     

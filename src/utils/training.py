@@ -4,6 +4,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import SimpleRNN, LSTM, GRU, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.models import load_model
 import utils.preprocessing as pp
 import utils.evaluation as eval
 import utils.constants as c
@@ -152,3 +153,30 @@ def random_search_rnn(df, param_grid, dataset_info, num_iterations=100):
             }
     
     return best_model, best_params, metrics
+
+
+def transfer_learning(df, model, params, dataset_info):
+    country = dataset_info['country']
+    commodity = dataset_info['commodity']
+    scaler_path = c.get_scaler_filename(country, commodity)
+    
+    X_train, y_train, X_val, y_val, X_test, y_test = pp.prepare_data(df, params['window_size'], 0.2, 0.1, scaler_filename=scaler_path)
+    
+    for layer in model.layers:
+       layer.trainable = False
+       
+    model.compile(optimizer=Adam(learning_rate=params['learning_rate']),
+                loss='mean_squared_error', 
+                metrics=['mae'])
+    
+    early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+    
+    model.fit(X_train, y_train, 
+            epochs=100, 
+            batch_size=params['batch_size'], 
+            validation_data=(X_val, y_val), callbacks=[early_stopping], verbose=0)
+    
+    y_pred = model.predict(X_test, verbose=0)
+    mae, mse = eval.load_scaler_and_evaluate(scaler_path, y_test, y_pred.reshape(-1,))
+    
+    return model, mse, mae
