@@ -1,0 +1,44 @@
+[
+  {
+    "country": "Argentina",
+    "commodity": "Rice",
+    "path": "models/Argentina-Rice-best-model.h5",
+    "best_params": {
+      "network_type": "GRU",
+      "window_size": 6,
+      "learning_rate": 0.0014407969833205134,
+      "num_layers": 1,
+      "neurons_per_layer": 64,
+      "batch_size": 64
+    },
+    "base_mae": 0.01360034529368084
+  },
+  {
+    "country": "Nigeria",
+    "commodity": "Rice",
+    "path": "models/Nigeria-Rice-best-model.h5",
+    "best_params": {
+      "network_type": "RNN",
+      "window_size": 2,
+      "learning_rate": 0.00775048958341018,
+      "num_layers": 2,
+      "neurons_per_layer": 32,
+      "batch_size": 32
+    },
+    "base_mae": 0.16059352806636262
+  },
+  {
+    "country": "Ukraine",
+    "commodity": "Rice",
+    "path": "models/Ukraine-Rice-best-model.h5",
+    "best_params": {
+      "network_type": "RNN",
+      "window_size": 2,
+      "learning_rate": 0.004508549164803068,
+      "num_layers": 2,
+      "neurons_per_layer": 128,
+      "batch_size": 32
+    },
+    "base_mae": 0.08132318878173829
+  }
+]
