@@ -2,7 +2,7 @@
   {
     "country": "Argentina",
     "commodity": "Rice",
-    "path": "models/Argentina-Rice-best-model.h5",
+    "path": "../models/Argentina-Rice-best-model.h5",
     "best_params": {
       "network_type": "GRU",
       "window_size": 6,
@@ -16,7 +16,7 @@
   {
     "country": "Nigeria",
     "commodity": "Rice",
-    "path": "models/Nigeria-Rice-best-model.h5",
+    "path": "../models/Nigeria-Rice-best-model.h5",
     "best_params": {
       "network_type": "RNN",
       "window_size": 2,
@@ -30,7 +30,7 @@
   {
     "country": "Ukraine",
     "commodity": "Rice",
-    "path": "models/Ukraine-Rice-best-model.h5",
+    "path": "../models/Ukraine-Rice-best-model.h5",
     "best_params": {
       "network_type": "RNN",
       "window_size": 2,

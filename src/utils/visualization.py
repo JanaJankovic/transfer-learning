@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import utils.preprocessing as pp
+import utils.constants as c
+import utils.tools as tls
+from tensorflow.keras.models import load_model
 import pickle
 import pandas as pd
 
@@ -65,5 +68,11 @@ def plot_model_prediction(df, model, param_grid, scaler_filename, title):
     plt.show()
     
     
-    
+def plot_evaluations(countries, commodity, json_path):
+    for country in countries:
+        df = pd.read_csv(c.get_countries(commodity, country)['processed'])
+        data = tls.get_result(json_path, country, commodity)
+        model = load_model(data['path'])
+        
+        plot_model_prediction(df, model, data['best_params'], c.get_scaler_filename(country, commodity), f'{commodity} price prediction in {country}')
     

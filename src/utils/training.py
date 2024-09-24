@@ -1,5 +1,7 @@
 import numpy as np
 import tensorflow as tf
+import pandas as pd
+import utils.tools as tls
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import SimpleRNN, LSTM, GRU, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
@@ -184,3 +186,26 @@ def transfer_learning(df, model_path, params, dataset_info):
     mae, mse = eval.load_scaler_and_evaluate(scaler_path, y_test, y_pred.reshape(-1,))
     
     return model, mse, mae
+
+def train_models(countries, commodity, param_grid, json_path):
+    for country in countries:
+        dataset_info = {
+        'country': country,
+        'commodity': commodity
+        }
+
+        large_df = pd.read_csv(c.get_countries(commodity, country)['processed'])
+        best_model, best_params, metrics = random_search_rnn(large_df[['usdprice']], param_grid, dataset_info , num_iterations=500)
+        print(best_params, metrics)
+
+        best_model.save(c.get_model_filename(country, commodity))
+        
+        result = {
+            'country': country,
+            'commodity': commodity,
+            'path': c.get_model_filename(country, commodity),
+            'best_params': best_params,
+            'base_mae': metrics['test_mae']
+        }
+        
+        tls.write_results(json_path, result)

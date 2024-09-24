@@ -2,7 +2,7 @@
   {
     "country": "Bangladesh",
     "commodity": "Rice",
-    "path": "models/Bangladesh-Rice-best-model.h5",
+    "path": "../models/Bangladesh-Rice-best-model.h5",
     "best_params": {
       "network_type": "LSTM",
       "window_size": 2,
@@ -16,7 +16,7 @@
   {
     "country": "India",
     "commodity": "Rice",
-    "path": "models/India-Rice-best-model.h5",
+    "path": "../models/India-Rice-best-model.h5",
     "best_params": {
       "network_type": "LSTM",
       "window_size": 2,
@@ -30,7 +30,7 @@
   {
     "country": "Indonesia",
     "commodity": "Rice",
-    "path": "models/Indonesia-Rice-best-model.h5",
+    "path": "../models/Indonesia-Rice-best-model.h5",
     "best_params": {
       "network_type": "LSTM",
       "window_size": 2,
@@ -44,7 +44,7 @@
   {
     "country": "Nepal",
     "commodity": "Rice",
-    "path": "models/Nepal-Rice-best-model.h5",
+    "path": "../models/Nepal-Rice-best-model.h5",
     "best_params": {
       "network_type": "GRU",
       "window_size": 4,
@@ -58,7 +58,7 @@
   {
     "country": "Pakistan",
     "commodity": "Rice",
-    "path": "models/Pakistan-Rice-best-model.h5",
+    "path": "../models/Pakistan-Rice-best-model.h5",
     "best_params": {
       "network_type": "GRU",
       "window_size": 4,
@@ -72,7 +72,7 @@
   {
     "country": "Philipines",
     "commodity": "Rice",
-    "path": "models/Philipines-Rice-best-model.h5",
+    "path": "../models/Philipines-Rice-best-model.h5",
     "best_params": {
       "network_type": "LSTM",
       "window_size": 2,
@@ -86,7 +86,7 @@
   {
     "country": "Senegal",
     "commodity": "Rice",
-    "path": "models/Senegal-Rice-best-model.h5",
+    "path": "../models/Senegal-Rice-best-model.h5",
     "best_params": {
       "network_type": "GRU",
       "window_size": 2,
