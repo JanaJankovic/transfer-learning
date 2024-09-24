@@ -1,8 +1,24 @@
 import json
+import numpy as np
+
+def numpy_converter(obj):
+    """Convert NumPy types to Python-native types."""
+    if isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()  # Convert NumPy array to list
+    else:
+        raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
 def write_results(json_file_path, updated_data):
+    print('hello')
+    
     with open(json_file_path, 'r') as f:
         data = json.load(f)
+
+
 
     for entry in data:
         if (entry['country'] == updated_data['country'] and
@@ -14,7 +30,7 @@ def write_results(json_file_path, updated_data):
             break
 
     with open(json_file_path, 'w') as f:
-        json.dump(data, f, indent=4)
+        json.dump(data, f, default=numpy_converter, indent=4)
         
 
 def get_result(json_file_path, country, commodity):
