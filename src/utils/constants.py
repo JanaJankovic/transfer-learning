@@ -31,3 +31,8 @@ def get_model_filename(country, commodity):
 def get_tl_model_filename(base, country, commodity):
     return f'../models/{base}-{country}-{commodity}-transfer-learning.h5'
 
+def get_large_model_results():
+    return '../reports/large-models.json'
+
+def get_small_model_results():
+    return '../reports/small-models.json'

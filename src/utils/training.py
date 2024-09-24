@@ -155,16 +155,20 @@ def random_search_rnn(df, param_grid, dataset_info, num_iterations=100):
     return best_model, best_params, metrics
 
 
-def transfer_learning(df, model, params, dataset_info):
+def transfer_learning(df, model_path, params, dataset_info):
     country = dataset_info['country']
     commodity = dataset_info['commodity']
     scaler_path = c.get_scaler_filename(country, commodity)
+    
+    model = load_model(model_path)
     
     X_train, y_train, X_val, y_val, X_test, y_test = pp.prepare_data(df, params['window_size'], 0.2, 0.1, scaler_filename=scaler_path)
     
     for layer in model.layers:
        layer.trainable = False
        
+    model.add(Dense(1))
+    
     model.compile(optimizer=Adam(learning_rate=params['learning_rate']),
                 loss='mean_squared_error', 
                 metrics=['mae'])
