@@ -36,3 +36,6 @@ def get_large_model_results():
 
 def get_small_model_results():
     return '../reports/small-models.json'
+
+def get_tl_model_results():
+    return '../reports/tl-models.json'

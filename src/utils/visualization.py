@@ -76,3 +76,12 @@ def plot_evaluations(countries, commodity, json_path):
         
         plot_model_prediction(df, model, data['best_params'], c.get_scaler_filename(country, commodity), f'{commodity} price prediction in {country}')
     
+    
+def plot_tl_evaluations(target_country, countries, commodity, json_path, json_tl_path):
+    for country in countries:
+        df = pd.read_csv(c.get_countries(commodity, target_country)['processed'])
+        base_data = tls.get_result(json_path, country, commodity)
+        tl_data = tls.get_tl_result(json_tl_path, target_country, country, commodity)
+        model = load_model(tl_data['path'])
+        
+        plot_model_prediction(df, model, base_data['best_params'], c.get_scaler_filename(target_country, commodity), f'{commodity} price prediction in {target_country} learned from {country}')

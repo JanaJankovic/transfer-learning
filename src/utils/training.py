@@ -140,7 +140,7 @@ def random_search_rnn(df, param_grid, dataset_info, num_iterations=100):
     return best_model, best_params, metrics
 
 
-def train_models(countries, commodity, param_grid, json_path):
+def train_models_pipeline(countries, commodity, param_grid, json_path):
     for country in countries:
         dataset_info = {
         'country': country,

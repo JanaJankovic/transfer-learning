@@ -9,6 +9,7 @@ import utils.preprocessing as pp
 import utils.evaluation as eval
 import utils.constants as c
 import numpy as np
+import pandas as pd
 
 def add_simple_RNN_layers(input_layer, num_layers, neurons_per_layer):
     x = input_layer
@@ -58,8 +59,7 @@ def prepare_model(pretrained_model, params):
         layer.trainable = False
 
     reshaped_output = tf.expand_dims(model_with_removed_output.output, axis=1)
-    print(type(reshaped_output))
-    
+
     if params['network_type'] == 'RNN':
         x = add_simple_RNN_layers(reshaped_output, params['num_layers'], params['neurons_per_layer'])
     elif params['network_type'] == 'LSTM':
@@ -97,11 +97,7 @@ def transfer_learning(X_train, y_train, X_val, y_val, X_test, y_test, pretrained
     return new_model, mse, mae
 
 
-def random_search_transfer_learning(df, model_path, window_size, param_grid, dataset_info, num_iterations=100):
-    country = dataset_info['country']
-    commodity = dataset_info['commodity']
-    
-    scaler_path = c.get_scaler_filename(country, commodity)
+def random_search_transfer_learning(df, model_path, window_size, param_grid, scaler_path, num_iterations=100):
     pretrained_model = load_model(model_path)
     
     # Prepare the data
@@ -138,8 +134,29 @@ def random_search_transfer_learning(df, model_path, window_size, param_grid, dat
     return best_model, best_params, metrics
         
         
-            
-    
-    
-    
-    
+def transfer_learning_pipeline(target_country, base_countries, commodity, param_grid, json_path):
+    for country in base_countries:
+
+        df = pd.read_csv(c.get_countries(commodity, target_country)['processed'])
+
+        base_metadata = tls.get_result(c.get_large_model_results(), country, commodity)
+        window_size = base_metadata['best_params']['window_size']
+
+        scaler_path = c.get_scaler_filename(target_country, commodity)
+
+        tl_model, best_params, metrics = random_search_transfer_learning(df[['usdprice']], c.get_model_filename(country, commodity), window_size, param_grid, scaler_path, num_iterations=10)
+        print(f"Transfer learning MAE: {metrics['mae']}")
+        print(best_params)
+
+        tl_model.save(c.get_tl_model_filename(country, target_country, commodity, 'new-layers'))
+
+        result = {
+            'base': country,
+            'country': target_country,
+            'commodity': commodity,
+            'path': c.get_tl_model_filename(country, target_country, commodity, 'new-layers'),
+            'best_params': best_params,
+            'best_mae': metrics['mae']
+        }
+
+        tls.write_tl_results(json_path, result)

@@ -1,0 +1,100 @@
+[
+    {
+        "base": "India",
+        "country": "Ukraine",
+        "commodity": "Rice",
+        "path": "../models/India-Ukraine-Rice-new-layers.h5",
+        "best_params": {
+            "network_type": "GRU",
+            "learning_rate": 0.0014462338342871833,
+            "num_layers": 2,
+            "neurons_per_layer": 128,
+            "batch_size": 64
+        },
+        "best_mae": 0.13945790105116992
+    },
+    {
+        "base": "Bangladesh",
+        "country": "Ukraine",
+        "commodity": "Rice",
+        "path": "../models/Bangladesh-Ukraine-Rice-new-layers.h5",
+        "best_params": {
+            "network_type": "LSTM",
+            "learning_rate": 0.006081590011469015,
+            "num_layers": 1,
+            "neurons_per_layer": 64,
+            "batch_size": 32
+        },
+        "best_mae": 0.10684113156168085
+    },
+    {
+        "base": "Indonesia",
+        "country": "Ukraine",
+        "commodity": "Rice",
+        "path": "../models/Indonesia-Ukraine-Rice-new-layers.h5",
+        "best_params": {
+            "network_type": "GRU",
+            "learning_rate": 0.00862798051521731,
+            "num_layers": 1,
+            "neurons_per_layer": 64,
+            "batch_size": 16
+        },
+        "best_mae": 0.08094658138877468
+    },
+    {
+        "base": "Nepal",
+        "country": "Ukraine",
+        "commodity": "Rice",
+        "path": "../models/Nepal-Ukraine-Rice-new-layers.h5",
+        "best_params": {
+            "network_type": "LSTM",
+            "learning_rate": 0.008731825041173138,
+            "num_layers": 1,
+            "neurons_per_layer": 128,
+            "batch_size": 16
+        },
+        "best_mae": 0.19289507086136762
+    },
+    {
+        "base": "Pakistan",
+        "country": "Ukraine",
+        "commodity": "Rice",
+        "path": "../models/Pakistan-Ukraine-Rice-new-layers.h5",
+        "best_params": {
+            "network_type": "RNN",
+            "learning_rate": 0.004006731550159596,
+            "num_layers": 1,
+            "neurons_per_layer": 64,
+            "batch_size": 16
+        },
+        "best_mae": 0.2766262944165398
+    },
+    {
+        "base": "Philipines",
+        "country": "Ukraine",
+        "commodity": "Rice",
+        "path": "../models/Philipines-Ukraine-Rice-new-layers.h5",
+        "best_params": {
+            "network_type": "GRU",
+            "learning_rate": 0.0019988033994002507,
+            "num_layers": 1,
+            "neurons_per_layer": 128,
+            "batch_size": 64
+        },
+        "best_mae": 0.09193013497402792
+    },
+    {
+        "base": "Senegal",
+        "country": "Ukraine",
+        "commodity": "Rice",
+        "path": "../models/Senegal-Ukraine-Rice-new-layers.h5",
+        "best_params": {
+            "network_type": "GRU",
+            "learning_rate": 0.0033351899111185,
+            "num_layers": 1,
+            "neurons_per_layer": 128,
+            "batch_size": 32
+        },
+        "best_mae": 0.11430011714132209
+    }
+]
