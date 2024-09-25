@@ -62,12 +62,12 @@ def get_result(json_file_path, country, commodity):
     return None
 
 
-def get_tl_result(json_file_path, target_country, base, commodity):
+def get_tl_result(json_file_path, target_country, base, commodity, path):
     with open(json_file_path, 'r') as f:
         data = json.load(f)
 
     for entry in data:
-        if entry['country'] == target_country and entry['base'] == base and entry['commodity'] == commodity:
+        if entry['country'] == target_country and entry['base'] == base and entry['commodity'] == commodity and entry['path'] == path:
             return entry
 
     return None

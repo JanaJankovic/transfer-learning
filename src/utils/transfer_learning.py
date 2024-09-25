@@ -160,3 +160,52 @@ def transfer_learning_pipeline(target_country, base_countries, commodity, param_
         }
 
         tls.write_tl_results(json_path, result)
+        
+
+
+def transfer_learning_pipeline_small_lr(target_country, base_countries, commodity, json_path, learning_rates):
+    for country in base_countries:
+
+        df = pd.read_csv(c.get_countries(commodity, target_country)['processed'])
+
+        base_metadata = tls.get_result(c.get_large_model_results(), country, commodity)
+        window_size = base_metadata['best_params']['window_size']
+        
+        scaler_path = c.get_scaler_filename(target_country, commodity)
+        
+        X_train, y_train, X_val, y_val, X_test, y_test = pp.prepare_data(df[['usdprice']], window_size, 0.2, 0.1, scaler_filename=scaler_path)
+        
+        best_model = None
+        best_mae = np.inf
+        
+        for learning_rate in learning_rates:
+            pretrained_model = load_model(c.get_model_filename(country, commodity))
+            
+            pretrained_model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mse', metrics=['mae'])
+            
+            early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+                    
+            pretrained_model.fit(X_train, y_train, validation_data=(X_val, y_val),
+                                epochs=100, batch_size=base_metadata['best_params']['batch_size'], callbacks=[early_stopping], verbose=0)
+            
+            y_pred = pretrained_model.predict(X_test, verbose=0)
+            mae, mse = eval.load_scaler_and_evaluate(scaler_path, y_test, y_pred.reshape(-1,))
+            
+            if mae < best_mae:
+                best_mae = mae
+                best_model = pretrained_model
+        
+        print(f"Transfer learning MAE: {mae}")
+
+        best_model.save(c.get_tl_model_filename(country, target_country, commodity, 'small-rate'))
+
+        result = {
+            'base': country,
+            'country': target_country,
+            'commodity': commodity,
+            'path': c.get_tl_model_filename(country, target_country, commodity, 'small-rate'),
+            'best_mae': best_mae,
+            'best_params': base_metadata['best_params']
+        }
+
+        tls.write_tl_results(json_path, result)
