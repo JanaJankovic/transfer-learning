@@ -18,8 +18,6 @@ def write_results(json_file_path, updated_data):
     with open(json_file_path, 'r') as f:
         data = json.load(f)
 
-
-
     for entry in data:
         if (entry['country'] == updated_data['country'] and
             entry['commodity'] == updated_data['commodity'] and
@@ -43,3 +41,21 @@ def get_result(json_file_path, country, commodity):
 
     return None
 
+
+def get_parameters(param_grid):
+    network_type = np.random.choice(param_grid['network_type'])
+    window_size = np.random.choice(param_grid['window_size'])
+    learning_rate = np.random.uniform(*param_grid['learning_rate'])
+    num_layers = np.random.choice(param_grid['num_layers'])
+    neurons_per_layer = np.random.choice(param_grid['neurons_per_layer'])
+    batch_size = np.random.choice(param_grid['batch_size'])
+    
+    
+    return {
+        'network_type': network_type, 
+        'window_size': window_size,
+        'learning_rate': learning_rate,
+        'num_layers': num_layers,
+        'neurons_per_layer': neurons_per_layer,
+        'batch_size': batch_size
+    }

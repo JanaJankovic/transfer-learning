@@ -28,8 +28,8 @@ def get_scaler_filename(country, commodity):
 def get_model_filename(country, commodity):
     return f'../models/{country}-{commodity}-best-model.h5'
 
-def get_tl_model_filename(base, country, commodity):
-    return f'../models/{base}-{country}-{commodity}-transfer-learning.h5'
+def get_tl_model_filename(base, country, commodity, type):
+    return f'../models/{base}-{country}-{commodity}-{type}.h5'
 
 def get_large_model_results():
     return '../reports/large-models.json'
