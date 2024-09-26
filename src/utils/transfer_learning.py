@@ -19,8 +19,8 @@ def add_simple_RNN_layers(input_layer, num_layers, neurons_per_layer):
         else:
             return_sequences = False
 
-        x = SimpleRNN(neurons_per_layer, return_sequences=return_sequences)(x)
-        x = Dropout(0.2)(x)
+        x = SimpleRNN(neurons_per_layer, return_sequences=return_sequences, name=f'rnn_new_{i}')(x)
+        x = Dropout(0.2, name=f'dropout_rnn_new_{i}')(x)
 
     return x
 
@@ -32,8 +32,8 @@ def add_LSTM_layers(input_layer, num_layers, neurons_per_layer):
         else:
             return_sequences = False
 
-        x = LSTM(neurons_per_layer, return_sequences=return_sequences)(x)
-        x = Dropout(0.2)(x)
+        x = LSTM(neurons_per_layer, return_sequences=return_sequences, name=f'lstm_new_{i}')(x)
+        x = Dropout(0.2, name=f'dropout_lstm_new_{i}')(x)
 
     return x
 
@@ -46,8 +46,8 @@ def add_GRU_layers(input_layer, num_layers, neurons_per_layer):
         else:
             return_sequences = False
 
-        x = GRU(neurons_per_layer, return_sequences=return_sequences)(x)
-        x = Dropout(0.2)(x)
+        x = GRU(neurons_per_layer, return_sequences=return_sequences, name=f'gru_new_{i}')(x)
+        x = Dropout(0.2, name=f'dropout_gru_new_{i}')(x)
 
     return x
 
@@ -67,7 +67,7 @@ def prepare_model(pretrained_model, params):
     elif params['network_type'] == 'GRU':
         x = add_GRU_layers(reshaped_output, params['num_layers'], params['neurons_per_layer'])
     
-    new_output = Dense(1, activation='linear')(x)
+    new_output = Dense(1, activation='linear', name='output_new')(x)
     
     new_model = Model(inputs=pretrained_model.input, outputs=new_output)
     return new_model
@@ -144,7 +144,7 @@ def transfer_learning_pipeline(target_country, base_countries, commodity, param_
 
         scaler_path = c.get_scaler_filename(target_country, commodity)
 
-        tl_model, best_params, metrics = random_search_transfer_learning(df[['usdprice']], c.get_model_filename(country, commodity), window_size, param_grid, scaler_path, num_iterations=10)
+        tl_model, best_params, metrics = random_search_transfer_learning(df[['usdprice']], c.get_model_filename(country, commodity), window_size, param_grid, scaler_path, num_iterations=500)
         print(f"Transfer learning MAE: {metrics['mae']}")
         print(best_params)
 
@@ -177,6 +177,7 @@ def transfer_learning_pipeline_small_lr(target_country, base_countries, commodit
         
         best_model = None
         best_mae = np.inf
+        best_learning_rate = 0
         
         for learning_rate in learning_rates:
             pretrained_model = load_model(c.get_model_filename(country, commodity))
@@ -194,8 +195,9 @@ def transfer_learning_pipeline_small_lr(target_country, base_countries, commodit
             if mae < best_mae:
                 best_mae = mae
                 best_model = pretrained_model
+                best_learning_rate = learning_rate
         
-        print(f"Transfer learning MAE: {mae}")
+        print(f"Transfer learning MAE: {best_mae}")
 
         best_model.save(c.get_tl_model_filename(country, target_country, commodity, 'small-rate'))
 
@@ -205,7 +207,8 @@ def transfer_learning_pipeline_small_lr(target_country, base_countries, commodit
             'commodity': commodity,
             'path': c.get_tl_model_filename(country, target_country, commodity, 'small-rate'),
             'best_mae': best_mae,
-            'best_params': base_metadata['best_params']
+            'best_params': base_metadata['best_params'],
+            'learning_rate': best_learning_rate
         }
 
         tls.write_tl_results(json_path, result)

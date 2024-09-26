@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from skopt import BayesSearchCV
 import pandas as pd
 import utils.tools as tls
 from tensorflow.keras.models import Sequential

@@ -85,3 +85,20 @@ def plot_tl_evaluations(target_country, countries, commodity, json_path, json_tl
         model = load_model(tl_data['path'])
         
         plot_model_prediction(df, model, base_data['best_params'], c.get_scaler_filename(target_country, commodity), f'{commodity} price prediction in {target_country} learned from {country}')
+        
+        
+def line_bar_plot(df, model, param_grid, scaler_filename):
+    _, _, _, _, X_test, _ = pp.prepare_data(df[['usdprice']], param_grid['window_size'], 0.2, 0.1, scaler_filename)
+    y_pred = model.predict(X_test)
+    
+    # Load the scaler
+    with open(scaler_filename, 'rb') as f:
+        scaler = pickle.load(f)
+    
+    y_pred_original = scaler.inverse_transform(y_pred.reshape(-1, 1)).flatten()
+    dates = pd.to_datetime(df['date'])
+    usdprice = df['usdprice']
+
+    return dates, usdprice, y_pred_original
+
+
