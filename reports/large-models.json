@@ -4,14 +4,16 @@
     "commodity": "Rice",
     "path": "../models/Bangladesh-Rice-best-model.h5",
     "best_params": {
-      "network_type": "LSTM",
       "window_size": 2,
-      "learning_rate": 0.0020685206286897117,
-      "num_layers": 1,
-      "neurons_per_layer": 128,
-      "batch_size": 64
+      "batch_size": 63,
+      "network_type": "GRU",
+      "num_layers": 3,
+      "num_neurons": 129,
+      "learning_rate": 0.0030744097593230733,
+      "dropout_rate": 0.10185663957470273
     },
-    "base_mae": 0.013099876567721372
+    "base_mae": 0.013099876567721372,
+    "best_mae": 0.01689188147087892
   },
   {
     "country": "India",
@@ -39,7 +41,8 @@
       "neurons_per_layer": 64,
       "batch_size": 32
     },
-    "base_mae": 0.013156596770653351
+    "base_mae": 0.013156596770653351,
+    "best_mae": 0.01689188147087892
   },
   {
     "country": "Nepal",

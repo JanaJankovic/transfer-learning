@@ -1,165 +1,111 @@
-import numpy as np
-import tensorflow as tf
-from skopt import BayesSearchCV
+from tensorflow.keras.callbacks import EarlyStopping
+import optuna
 import pandas as pd
 import utils.tools as tls
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import SimpleRNN, LSTM, GRU, Dense, Dropout
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.models import load_model
 import utils.preprocessing as pp
 import utils.evaluation as eval
 import utils.tools as tls
 import utils.constants as c
+import utils.models as m
 
 
-def create_simple_rnn_model(input_shape, num_neurons=64, num_layers=2, learning_rate=1e-4, dropout_rate=0.2):
-    model = Sequential()
+def create_simple_rnn_model(trial, input_shape):
+    num_layers = trial.suggest_int("num_layers", 1, 5)
+    num_neurons = trial.suggest_int("num_neurons", 16, 256)
+    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2)
+    dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.3)
     
-    # First RNN layer, return full sequence for stacking more layers
-    model.add(SimpleRNN(num_neurons, activation='relu', return_sequences=(num_layers > 1), input_shape=input_shape))
-    model.add(Dropout(dropout_rate))
+    return m.build_rnn_model(input_shape, num_layers, num_neurons, learning_rate, dropout_rate)
+
+def create_lstm_model(trial, input_shape):
+    num_layers = trial.suggest_int("num_layers", 1, 5)
+    num_neurons = trial.suggest_int("num_neurons", 16, 256)
+    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2)
+    dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.3)
+       
+    return m.build_lstm_model(input_shape, num_layers, num_neurons, learning_rate, dropout_rate)
+
+def create_gru_model(trial, input_shape):
+    num_layers = trial.suggest_int("num_layers", 1, 5)
+    num_neurons = trial.suggest_int("num_neurons", 16, 256)
+    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2)
+    dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.3)
     
-    # Additional RNN layers (if any)
-    for i in range(1, num_layers):
-        # Only the last layer should not return sequences
-        return_sequences = (i < num_layers - 1)
-        model.add(SimpleRNN(num_neurons, activation='relu', return_sequences=return_sequences))
-        model.add(Dropout(dropout_rate))
-        
-    # Output layer: single unit for regression (predicting a single value)
-    model.add(Dense(1))
-    
-    # Compile the model
-    model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mse', metrics=['mae'])
-    
-    return model
+    return m.build_gru_model(input_shape, num_layers, num_neurons, learning_rate, dropout_rate)
 
 
-def create_lstm_model(input_shape, num_neurons=64, num_layers=2, learning_rate=1e-4, dropout_rate=0.2):
-    model = Sequential()
-    
-    # First RNN layer, return full sequence for stacking more layers
-    model.add(LSTM(num_neurons, activation='relu', return_sequences=(num_layers > 1), input_shape=input_shape))
-    model.add(Dropout(dropout_rate))
-    
-    # Additional RNN layers (if any)
-    for i in range(1, num_layers):
-        # Only the last layer should not return sequences
-        return_sequences = (i < num_layers - 1)
-        model.add(LSTM(num_neurons, activation='relu', return_sequences=return_sequences))
-        model.add(Dropout(dropout_rate))
-        
-    # Output layer: single unit for regression (predicting a single value)
-    model.add(Dense(1))
-    
-    # Compile the model
-    model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mse', metrics=['mae'])
-    
-    return model
-
-def create_gru_model(input_shape, num_neurons=64, num_layers=2, learning_rate=1e-4, dropout_rate=0.2):
-    model = Sequential()
-    
-    # First RNN layer, return full sequence for stacking more layers
-    model.add(GRU(num_neurons, activation='relu', return_sequences=(num_layers > 1), input_shape=input_shape))
-    model.add(Dropout(dropout_rate))
-    
-    # Additional RNN layers (if any)
-    for i in range(1, num_layers):
-        # Only the last layer should not return sequences
-        return_sequences = (i < num_layers - 1)
-        model.add(GRU(num_neurons, activation='relu', return_sequences=return_sequences))
-        model.add(Dropout(dropout_rate))
-        
-    # Output layer: single unit for regression (predicting a single value)
-    model.add(Dense(1))
-    
-    # Compile the model
-    model.compile(optimizer=Adam(learning_rate=learning_rate), loss='mse', metrics=['mae'])
-    
-    return model
+def build_model(trial, network_type, input_shape):
+    if network_type == "RNN":
+        return create_simple_rnn_model(trial, input_shape)
+    elif network_type == "LSTM":
+        return create_lstm_model(trial, input_shape)
+    elif network_type == "GRU":
+        return create_gru_model(trial, input_shape)
 
 
-def random_search_rnn(df, param_grid, dataset_info, num_iterations=100):
-    best_mse = np.inf
-    best_model = None
-    best_params = None
+# Define objective function for Optuna
+def objective(trial, df, scaler_path):
+    window_size = trial.suggest_int("window_size", 2, 6)
+    batch_size = trial.suggest_int("batch_size", 16, 64)
+    network_type = trial.suggest_categorical("network_type", ["RNN", "LSTM", "GRU"])
     
-    metrics = {}
+    input_shape = (window_size, 1)    
+    X_train, y_train, X_val, y_val, X_test, y_test = pp.prepare_data(df[['usdprice']], window_size, 0.2, 0.1, scaler_filename=scaler_path)
     
-    country = dataset_info['country']
-    commodity = dataset_info['commodity']
+    model = build_model(trial, network_type, input_shape)
+    
+    early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+    
+    model.fit(X_train, y_train, validation_data=(X_val, y_val),
+                            epochs=100, batch_size=batch_size, callbacks=[early_stopping], verbose=0)
+    
+    y_pred = model.predict(X_test)
+    test_mae, _ = eval.load_scaler_and_evaluate(scaler_path, y_test, y_pred.reshape(-1,))
+    
+    return test_mae
+
+
+def bayesian_optimization_params(commodity, country, n_trials):
+    study = optuna.create_study(direction="minimize")
+    df = pd.read_csv(c.get_countries(commodity, country)['processed'])
     scaler_path = c.get_scaler_filename(country, commodity)
     
-    for _ in range(num_iterations): 
-        params = tls.get_parameters(param_grid)       
-        
-        X_train, y_train, X_val, y_val, X_test, y_test = pp.prepare_data(df, params['window_size'], 0.2, 0.1, scaler_filename=scaler_path)
-        
-        model = create_simple_rnn_model((params['window_size'], 1), params['neurons_per_layer'], params['num_layers'], params['learning_rate'])
-        
-        if params['network_type'] == 'LSTM':
-            model = create_lstm_model((params['window_size'], 1), params['neurons_per_layer'], params['num_layers'], params['learning_rate'])
-        elif params['network_type'] == 'GRU':
-            model = create_gru_model((params['window_size'], 1), params['neurons_per_layer'], params['num_layers'], params['learning_rate'])
-        
-        # Early stopping callback
-        early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
-                
-        # Train the model
-        history = model.fit(X_train, y_train, validation_data=(X_val, y_val),
-                            epochs=100, batch_size=params['batch_size'], callbacks=[early_stopping], verbose=0)
-        
-        val_loss = min(history.history['val_loss'])
-        val_mae = min(history.history['val_mae'])
-        
-        y_pred = model.predict(X_test, verbose=0)
-        mae, mse = eval.load_scaler_and_evaluate(scaler_path, y_test, y_pred.reshape(-1,))
+    study.optimize(lambda trial: objective(trial, df, scaler_path), n_trials=n_trials)
 
-        # Check if this model has the best validation performance
-        if mse < best_mse:
-            best_mse = mse
-            best_model = model
-            best_params = {
-                'network_type': params['network_type'],
-                'window_size': params['window_size'],
-                'learning_rate': params['learning_rate'],
-                'num_layers': params['num_layers'],
-                'neurons_per_layer': params['neurons_per_layer'],
-                'batch_size': params['batch_size']
-            }
-            
-            metrics = {
-                'val_loss': val_loss,
-                'val_mae': val_mae,
-                'test_mse': best_mse,
-                'test_mae': mae
-            }
+    best_params = study.best_params
+    print(f"Best parameters: {best_params}")
     
-    return best_model, best_params, metrics
+    return best_params
 
-
-def train_models_pipeline(countries, commodity, param_grid, json_path):
+def train_save_evaluate_model(commodity, country, model_path, best_params, scaler_path):
+    df = pd.read_csv(c.get_countries(commodity, country)['processed'])
+    X_train, y_train, X_val, y_val, X_test, y_test = pp.prepare_data(df[['usdprice']], best_params['window_size'], 0.2, 0.1, scaler_filename=scaler_path)
+    
+    model = m.build_model(best_params, input_shape=(best_params['window_size'], 1))
+    early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+    model.fit(X_train, y_train, validation_data=(X_val, y_val),
+                            epochs=100, batch_size=best_params['batch_size'], callbacks=[early_stopping], verbose=0)
+    
+    model.save(model_path)
+    
+    y_pred = model.predict(X_test)
+    mae, _ = eval.load_scaler_and_evaluate(scaler_path, y_test, y_pred.reshape(-1,))
+    
+    return mae
+    
+    
+def training_pipeline(countries, commodity, json_path, n_trials=100):
     for country in countries:
-        dataset_info = {
-        'country': country,
-        'commodity': commodity
-        }
-
-        large_df = pd.read_csv(c.get_countries(commodity, country)['processed'])
-        best_model, best_params, metrics = random_search_rnn(large_df[['usdprice']], param_grid, dataset_info , num_iterations=500)
-        print(best_params, metrics)
-
-        best_model.save(c.get_model_filename(country, commodity))
+        best_params = bayesian_optimization_params(commodity, country, n_trials)
+        model_path = c.get_model_filename(country, commodity)
+        best_mae = train_save_evaluate_model(commodity, country, model_path, best_params, c.get_scaler_filename(country, commodity))
         
         result = {
             'country': country,
             'commodity': commodity,
-            'path': c.get_model_filename(country, commodity),
+            'path': model_path,
             'best_params': best_params,
-            'base_mae': metrics['test_mae']
+            'best_mae': best_mae
         }
         
         tls.write_results(json_path, result)

@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import utils.constants as c
 
 def numpy_converter(obj):
     """Convert NumPy types to Python-native types."""
@@ -23,7 +24,7 @@ def write_results(json_file_path, updated_data):
             entry['path'] == updated_data['path']):
             
             entry['best_params'] = updated_data['best_params']
-            entry['base_mae'] = updated_data['base_mae']
+            entry['best_mae'] = updated_data['best_mae']
             break
 
     with open(json_file_path, 'w') as f:
@@ -72,6 +73,14 @@ def get_tl_result(json_file_path, target_country, base, commodity, path):
 
     return None
 
+
+def get_all_metrics(target_country, country, commodity):
+    target_country_mae = get_result(c.get_small_model_results(), target_country, commodity)['best_mae']
+    country_mae = get_result(c.get_large_model_results(), country, commodity)['best_mae']
+    tl_mae = get_tl_result(c.get_tl_model_results(), target_country, country, commodity, c.get_tl_model_filename(country, target_country, commodity, 'new-layers'))['best_mae']
+    
+    return [country_mae, target_country_mae, tl_mae]
+    
 
 def get_parameters(param_grid):
     network_type = np.random.choice(param_grid['network_type'])

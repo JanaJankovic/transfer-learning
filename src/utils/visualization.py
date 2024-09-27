@@ -1,8 +1,8 @@
+from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 import utils.preprocessing as pp
 import utils.constants as c
 import utils.tools as tls
-from tensorflow.keras.models import load_model
 import pickle
 import pandas as pd
 
@@ -87,18 +87,76 @@ def plot_tl_evaluations(target_country, countries, commodity, json_path, json_tl
         plot_model_prediction(df, model, base_data['best_params'], c.get_scaler_filename(target_country, commodity), f'{commodity} price prediction in {target_country} learned from {country}')
         
         
-def line_bar_plot(df, model, param_grid, scaler_filename):
-    _, _, _, _, X_test, _ = pp.prepare_data(df[['usdprice']], param_grid['window_size'], 0.2, 0.1, scaler_filename)
+def bar_plot_mae(axs, i, target_country, country, commodity):
+    bar_values = tls.get_all_metrics(target_country, country, commodity)
+    bar_labels = [country, target_country, 'Transfer Learning']
+    
+
+    axs[i, 0].bar(range(len(bar_values)), bar_values, color=['#13274f', '#e7a801', '#ce1141'])
+    
+    axs[i, 0].set_xticks(range(len(bar_labels))) 
+    axs[i, 0].set_xticklabels(bar_labels) 
+    
+    # Set plot title and labels
+    axs[i, 0].set_title(f"MAE comparison between models")
+    axs[i, 0].set_ylabel('MAE')
+    axs[i, 0].set_xlabel('Models')
+
+
+
+def line_chart_values(df, window_size, scaler_filename, model_path):
+    model = load_model(model_path)
+    
+    _, _, _, _, X_test, _ = pp.prepare_data(df[['usdprice']], window_size, 0.2, 0.1, scaler_filename)
     y_pred = model.predict(X_test)
     
-    # Load the scaler
     with open(scaler_filename, 'rb') as f:
         scaler = pickle.load(f)
     
     y_pred_original = scaler.inverse_transform(y_pred.reshape(-1, 1)).flatten()
     dates = pd.to_datetime(df['date'])
     usdprice = df['usdprice']
-
     return dates, usdprice, y_pred_original
 
 
+def line_chart_prediction(axs, i, target_country, country, commodity, base=True):
+    df = pd.read_csv(c.get_countries(commodity, target_country)['processed'])
+    scaler_filename = c.get_scaler_filename(target_country, commodity)
+    
+    if base:
+        window_size = tls.get_result(c.get_small_model_results(), target_country, commodity)['best_params']['window_size']
+        model_path = c.get_model_filename(target_country, commodity)
+        title = f"Prediction plot of small model ({target_country})"
+        column = 1
+    else:
+        model_path = c.get_tl_model_filename(country, target_country, commodity, 'new-layers')
+        window_size = tls.get_result(c.get_large_model_results(), country, commodity)['best_params']['window_size']
+        title = f"Prediction plot of transfer learning model ({country})"
+        column = 2
+        
+    dates, usdprice, y_pred_original = line_chart_values(df, window_size, scaler_filename, model_path)
+    
+    axs[i, column].plot(dates, usdprice, label='Actual data', color='blue', linewidth=1)
+    axs[i, column].plot(dates.iloc[-len(y_pred_original):], y_pred_original, label='Predicted data', color='red', linewidth=2)
+    axs[i, column].set_title(title)
+    axs[i, column].set_ylabel('USD Price')
+    axs[i, column].legend()
+    axs[i, column].grid(True)
+    axs[i, column].tick_params(axis='x', rotation=45)
+
+
+def visualize_tl_summary(target_country, countries, commodity, title):
+    num_rows = len(countries)
+    
+    fig, axs = plt.subplots(num_rows, 3, figsize=(18, 6 * num_rows))
+    
+    for i, (country) in enumerate(countries):
+        bar_plot_mae(axs, i, target_country,  country, commodity)
+        line_chart_prediction(axs, i, target_country, country, commodity)
+        line_chart_prediction(axs, i, target_country, country, commodity, base=False)
+        
+    # Set the overall plot title
+    fig.suptitle(title, fontsize=16)
+    
+    plt.tight_layout(rect=[0, 0, 1, 0.96])  # Adjust the layout to fit the suptitle
+    plt.show()

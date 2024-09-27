@@ -11,7 +11,8 @@
       "neurons_per_layer": 64,
       "batch_size": 64
     },
-    "base_mae": 0.01360034529368084
+    "base_mae": 0.01360034529368084,
+    "best_mae": 0.01360034529368084
   },
   {
     "country": "Nigeria",
@@ -25,7 +26,8 @@
       "neurons_per_layer": 32,
       "batch_size": 32
     },
-    "base_mae": 0.16059352806636262
+    "base_mae": 0.16059352806636262,
+    "best_mae": 0.16059352806636262
   },
   {
     "country": "Ukraine",
@@ -39,6 +41,7 @@
       "neurons_per_layer": 128,
       "batch_size": 32
     },
-    "base_mae": 0.08132318878173829
+    "base_mae": 0.08132318878173829,
+    "best_mae": 0.08132318878173829
   }
 ]
