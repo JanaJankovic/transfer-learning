@@ -17,9 +17,9 @@ from tensorflow.keras.layers import Dense
 
 def add_layers(trial, reshaped_output):
     network_type = trial.suggest_categorical("network_type", ["RNN", "LSTM", "GRU"])
-    num_layers = trial.suggest_int("num_layers", 1, 5)
-    num_neurons = trial.suggest_int("num_neurons", 16, 256)
-    dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.3)
+    num_layers = trial.suggest_categorical("num_layers", [1, 2, 3])
+    num_neurons = trial.suggest_categorical("num_neurons", [16, 32, 64, 128])
+    dropout_rate = trial.suggest_categorical("dropout_rate", [0.1, 0.2, 0.3])
     
     if network_type == 'RNN':
         return m.add_simple_RNN_layers(reshaped_output, num_layers, num_neurons, dropout_rate)
@@ -47,8 +47,8 @@ def prepare_model(trial, pretrained_model):
 
 
 def objective(trial, X_train, y_train, X_val, y_val, X_test, y_test, pretrained_model, scaler_path):
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2)
-    batch_size = trial.suggest_int("batch_size", 16, 64)
+    learning_rate = trial.suggest_categorical("learning_rate", [1e-4, 1e-2, 1e-2])
+    batch_size = trial.suggest_categorical("batch_size", [16, 32, 64])
     
     
     new_model = prepare_model(trial, pretrained_model)

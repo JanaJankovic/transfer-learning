@@ -1,103 +1,114 @@
 [
-  {
-    "country": "Bangladesh",
-    "commodity": "Rice",
-    "path": "../models/Bangladesh-Rice-best-model.h5",
-    "best_params": {
-      "window_size": 2,
-      "batch_size": 63,
-      "network_type": "GRU",
-      "num_layers": 3,
-      "num_neurons": 129,
-      "learning_rate": 0.0030744097593230733,
-      "dropout_rate": 0.10185663957470273
+    {
+        "country": "Bangladesh",
+        "commodity": "Rice",
+        "path": "../models/Bangladesh-Rice-best-model.h5",
+        "best_params": {
+            "window_size": 2,
+            "batch_size": 16,
+            "network_type": "RNN",
+            "num_layers": 2,
+            "num_neurons": 128,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.3
+        },
+        "base_mae": 0.013099876567721372,
+        "best_mae": 0.021219191079338392
     },
-    "base_mae": 0.013099876567721372,
-    "best_mae": 0.01689188147087892
-  },
-  {
-    "country": "India",
-    "commodity": "Rice",
-    "path": "../models/India-Rice-best-model.h5",
-    "best_params": {
-      "network_type": "LSTM",
-      "window_size": 2,
-      "learning_rate": 0.005153355492457958,
-      "num_layers": 2,
-      "neurons_per_layer": 64,
-      "batch_size": 32
+    {
+        "country": "India",
+        "commodity": "Rice",
+        "path": "../models/India-Rice-best-model.h5",
+        "best_params": {
+            "window_size": 2,
+            "batch_size": 32,
+            "network_type": "LSTM",
+            "num_layers": 1,
+            "num_neurons": 128,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.1
+        },
+        "base_mae": 0.009681917905807495,
+        "best_mae": 0.009863669489471006
     },
-    "base_mae": 0.009681917905807495
-  },
-  {
-    "country": "Indonesia",
-    "commodity": "Rice",
-    "path": "../models/Indonesia-Rice-best-model.h5",
-    "best_params": {
-      "network_type": "LSTM",
-      "window_size": 2,
-      "learning_rate": 0.006821735717260804,
-      "num_layers": 3,
-      "neurons_per_layer": 64,
-      "batch_size": 32
+    {
+        "country": "Indonesia",
+        "commodity": "Rice",
+        "path": "../models/Indonesia-Rice-best-model.h5",
+        "best_params": {
+            "window_size": 6,
+            "batch_size": 32,
+            "network_type": "GRU",
+            "num_layers": 1,
+            "num_neurons": 64,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.1
+        },
+        "base_mae": 0.013156596770653351,
+        "best_mae": 0.014589349978310727
     },
-    "base_mae": 0.013156596770653351,
-    "best_mae": 0.01689188147087892
-  },
-  {
-    "country": "Nepal",
-    "commodity": "Rice",
-    "path": "../models/Nepal-Rice-best-model.h5",
-    "best_params": {
-      "network_type": "GRU",
-      "window_size": 4,
-      "learning_rate": 0.007994603755332012,
-      "num_layers": 3,
-      "neurons_per_layer": 128,
-      "batch_size": 32
+    {
+        "country": "Nepal",
+        "commodity": "Rice",
+        "path": "../models/Nepal-Rice-best-model.h5",
+        "best_params": {
+            "window_size": 6,
+            "batch_size": 32,
+            "network_type": "GRU",
+            "num_layers": 2,
+            "num_neurons": 128,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.3
+        },
+        "base_mae": 0.010761680068969721,
+        "best_mae": 0.012667902509371434
     },
-    "base_mae": 0.010761680068969721
-  },
-  {
-    "country": "Pakistan",
-    "commodity": "Rice",
-    "path": "../models/Pakistan-Rice-best-model.h5",
-    "best_params": {
-      "network_type": "GRU",
-      "window_size": 4,
-      "learning_rate": 0.006016341122291476,
-      "num_layers": 3,
-      "neurons_per_layer": 128,
-      "batch_size": 32
+    {
+        "country": "Pakistan",
+        "commodity": "Rice",
+        "path": "../models/Pakistan-Rice-best-model.h5",
+        "best_params": {
+            "window_size": 2,
+            "batch_size": 64,
+            "network_type": "RNN",
+            "num_layers": 1,
+            "num_neurons": 32,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.3
+        },
+        "base_mae": 0.01624543360005255,
+        "best_mae": 0.028924789989988015
     },
-    "base_mae": 0.01624543360005255
-  },
-  {
-    "country": "Philipines",
-    "commodity": "Rice",
-    "path": "../models/Philipines-Rice-best-model.h5",
-    "best_params": {
-      "network_type": "LSTM",
-      "window_size": 2,
-      "learning_rate": 0.00532691155334175,
-      "num_layers": 1,
-      "neurons_per_layer": 128,
-      "batch_size": 16
+    {
+        "country": "Philipines",
+        "commodity": "Rice",
+        "path": "../models/Philipines-Rice-best-model.h5",
+        "best_params": {
+            "window_size": 4,
+            "batch_size": 16,
+            "network_type": "LSTM",
+            "num_layers": 1,
+            "num_neurons": 64,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.1
+        },
+        "base_mae": 0.015039024972079094,
+        "best_mae": 0.015325229497389362
     },
-    "base_mae": 0.015039024972079094
-  },
-  {
-    "country": "Senegal",
-    "commodity": "Rice",
-    "path": "../models/Senegal-Rice-best-model.h5",
-    "best_params": {
-      "network_type": "GRU",
-      "window_size": 2,
-      "learning_rate": 0.0051497495061597,
-      "num_layers": 3,
-      "neurons_per_layer": 64,
-      "batch_size": 64
-    },
-    "base_mae": 0.016046040705272137
-  }
+    {
+        "country": "Senegal",
+        "commodity": "Rice",
+        "path": "../models/Senegal-Rice-best-model.h5",
+        "best_params": {
+            "window_size": 2,
+            "batch_size": 32,
+            "network_type": "RNN",
+            "num_layers": 1,
+            "num_neurons": 64,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.1
+        },
+        "base_mae": 0.016046040705272137,
+        "best_mae": 0.024607305782181888
+    }
 ]

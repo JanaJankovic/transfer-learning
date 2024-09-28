@@ -10,26 +10,26 @@ import utils.models as m
 
 
 def create_simple_rnn_model(trial, input_shape):
-    num_layers = trial.suggest_int("num_layers", 1, 5)
-    num_neurons = trial.suggest_int("num_neurons", 16, 256)
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2)
-    dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.3)
+    num_layers = trial.suggest_categorical("num_layers", [1, 2, 3])
+    num_neurons = trial.suggest_categorical("num_neurons", [16, 32, 64, 128])
+    learning_rate = trial.suggest_categorical("learning_rate", [1e-4, 1e-2, 1e-2])
+    dropout_rate = trial.suggest_categorical("dropout_rate", [0.1, 0.2, 0.3])
     
     return m.build_rnn_model(input_shape, num_layers, num_neurons, learning_rate, dropout_rate)
 
 def create_lstm_model(trial, input_shape):
-    num_layers = trial.suggest_int("num_layers", 1, 5)
-    num_neurons = trial.suggest_int("num_neurons", 16, 256)
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2)
-    dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.3)
+    num_layers = trial.suggest_categorical("num_layers", [1, 2, 3])
+    num_neurons = trial.suggest_categorical("num_neurons", [16, 32, 64, 128])
+    learning_rate = trial.suggest_categorical("learning_rate", [1e-4, 1e-2, 1e-2])
+    dropout_rate = trial.suggest_categorical("dropout_rate", [0.1, 0.2, 0.3])
        
     return m.build_lstm_model(input_shape, num_layers, num_neurons, learning_rate, dropout_rate)
 
 def create_gru_model(trial, input_shape):
-    num_layers = trial.suggest_int("num_layers", 1, 5)
-    num_neurons = trial.suggest_int("num_neurons", 16, 256)
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2)
-    dropout_rate = trial.suggest_float("dropout_rate", 0.1, 0.3)
+    num_layers = trial.suggest_categorical("num_layers", [1, 2, 3])
+    num_neurons = trial.suggest_categorical("num_neurons", [16, 32, 64, 128])
+    learning_rate = trial.suggest_categorical("learning_rate", [1e-4, 1e-2, 1e-2])
+    dropout_rate = trial.suggest_categorical("dropout_rate", [0.1, 0.2, 0.3])
     
     return m.build_gru_model(input_shape, num_layers, num_neurons, learning_rate, dropout_rate)
 
@@ -45,8 +45,8 @@ def build_model(trial, network_type, input_shape):
 
 # Define objective function for Optuna
 def objective(trial, df, scaler_path):
-    window_size = trial.suggest_int("window_size", 2, 6)
-    batch_size = trial.suggest_int("batch_size", 16, 64)
+    window_size = trial.suggest_categorical("window_size", [2, 4, 6])
+    batch_size = trial.suggest_categorical("batch_size", [16, 32, 64])
     network_type = trial.suggest_categorical("network_type", ["RNN", "LSTM", "GRU"])
     
     input_shape = (window_size, 1)    
