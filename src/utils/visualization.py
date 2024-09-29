@@ -5,6 +5,7 @@ import utils.constants as c
 import utils.tools as tls
 import pickle
 import pandas as pd
+import numpy as np
 
 def plot_line_charts(dfs, date_column, value_column, titles=None, xlabel='Date', ylabel='Value'):
     num_plots = len(dfs)
@@ -30,7 +31,7 @@ def plot_line_charts(dfs, date_column, value_column, titles=None, xlabel='Date',
     plt.tight_layout()
     plt.show()
     
-def plot_model_prediction(df, model, param_grid, scaler_filename, title):
+def plot_model_prediction(ax, df, model, param_grid, scaler_filename, title):
     _, _, _, _, X_test, _ = pp.prepare_data(df[['usdprice']], param_grid['window_size'], 0.2, 0.1, scaler_filename)
     y_pred = model.predict(X_test)
     
@@ -42,39 +43,41 @@ def plot_model_prediction(df, model, param_grid, scaler_filename, title):
     dates = pd.to_datetime(df['date'])
     usdprice = df['usdprice']
     
-    # Plotting
-    plt.figure(figsize=(10, 6))
-    plt.plot(dates, usdprice, label='Actual data', color='blue', linewidth=1)
+    # Plotting on the provided axis
+    ax.plot(dates, usdprice, label='Actual data', color='blue', linewidth=1)
     
     # Overlay the predictions on the plot
     test_start_index = len(df) - len(y_pred_original)
     
     if len(y_pred_original) == 1:
         # Plot as a single point
-        plt.plot(dates.iloc[test_start_index:], y_pred_original, 'ro', label='Predicted data')
+        ax.plot(dates.iloc[test_start_index:], y_pred_original, 'ro', label='Predicted data')
     else:
         # Plot as a line
-        plt.plot(dates.iloc[test_start_index:], y_pred_original, label='Predicted data', color='red', linewidth=2)
+        ax.plot(dates.iloc[test_start_index:], y_pred_original, label='Predicted data', color='red', linewidth=2)
     
     # Adding labels and title
-    plt.xlabel('Date')
-    plt.ylabel('USD Price')
-    plt.title(title)
-    plt.legend()
-    plt.grid(True)
+    ax.set_xlabel('Date')
+    ax.set_ylabel('USD Price')
+    ax.set_title(title)
+    ax.legend()
+    ax.grid(True)
+    ax.tick_params(axis='x', rotation=45)
+
     
-    plt.xticks(rotation=45)
-    plt.tight_layout()
-    plt.show()
-    
-    
-def plot_evaluations(countries, commodity, json_path):
-    for country in countries:
+def plot_evaluations(countries, commodity, json_path, figsize=(12, 6)):
+    fig, axs = plt.subplots(nrows=len(countries)//2 + len(countries)%2, ncols=2, figsize=figsize)  # Create a grid of subplots with 2 columns
+    axs = axs.flatten()  # Flatten the axis array for easier indexing
+
+    for i, country in enumerate(countries):
         df = pd.read_csv(c.get_countries(commodity, country)['processed'])
         data = tls.get_result(json_path, country, commodity)
         model = load_model(data['path'])
         
-        plot_model_prediction(df, model, data['best_params'], c.get_scaler_filename(country, commodity), f'{commodity} price prediction in {country}')
+        plot_model_prediction(axs[i], df, model, data['best_params'], c.get_scaler_filename(country, commodity), f'{commodity} price prediction in {country}')
+    
+    plt.tight_layout()
+    plt.show()
     
     
 def plot_tl_evaluations(target_country, countries, commodity, json_path, json_tl_path, type):
@@ -159,4 +162,51 @@ def visualize_tl_summary(target_country, countries, commodity, title):
     fig.suptitle(title, fontsize=16)
     
     plt.tight_layout(rect=[0, 0, 1, 0.96])  # Adjust the layout to fit the suptitle
+    plt.show()
+    
+    
+def plot_bar_from_array(values, labels, title='Bar Plot', xlabel='X-axis', ylabel='Y-axis', target_value=None):
+    """
+    Creates a bar plot from an array of values with corresponding labels.
+    
+    :param values: List or array of numeric values for the bar heights
+    :param labels: List or array of strings for the bar labels
+    :param title: Title of the bar plot
+    :param xlabel: Label for the x-axis
+    :param ylabel: Label for the y-axis
+    """
+    
+    # Check if the length of values matches the length of labels
+    if len(values) != len(labels):
+        raise ValueError("The length of 'values' must match the length of 'labels'.")
+    
+    # Create the figure and the bar plot
+    plt.figure(figsize=(8, 6))  # Adjust the size as needed
+    indices = np.arange(len(values))  # The x locations for the bars
+    
+    # Create the bar plot
+    plt.bar(indices, values, color='skyblue')
+    
+    # Set the x-axis ticks to the labels
+    plt.xticks(indices, labels)
+    
+    # Adding labels and title
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    
+    for i, value in enumerate(values):
+        plt.text(indices[i], value + 0.0001, f'{round(value, 4)}', ha='center', va='bottom', fontsize=10)
+    
+    
+    if target_value is not None:
+        plt.axhline(y=target_value, color='red', linestyle='-', linewidth=2, label=f'Target: {target_value}')
+        # Add label for the target line
+        plt.text(len(values) - 0.5, target_value + 0.0001, f'Base: {target_value}', color='red', fontsize=10)
+    
+    
+    plt.xticks(rotation=45, ha='right')  # Rotate labels for better readability if needed
+    plt.tight_layout()
+    
+    # Show the plot
     plt.show()

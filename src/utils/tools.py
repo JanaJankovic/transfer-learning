@@ -74,6 +74,22 @@ def get_tl_result(json_file_path, target_country, base, commodity, path):
     return None
 
 
+def get_all_maes(json_file_path):
+    with open(json_file_path, 'r') as f:
+        data = json.load(f)
+
+    return [entry['best_mae'] for entry in data]
+
+
+def get_tl_all_maes(json_file_path, target_country):
+    with open(json_file_path, 'r') as f:
+        data = json.load(f)
+    
+    # Filter and return 'best_mae' for the target country
+    return [entry['best_mae'] for entry in data if entry.get('country') == target_country]
+
+
+
 def get_all_metrics(target_country, country, commodity):
     target_country_mae = get_result(c.get_small_model_results(), target_country, commodity)['best_mae']
     country_mae = get_result(c.get_large_model_results(), country, commodity)['best_mae']
