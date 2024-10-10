@@ -42,7 +42,6 @@ The goal was to minimize MAE on test data, so the model used in transfer learnin
 ```
 param_grid = {
     'network_type': ['RNN', 'LSTM', 'GRU'],
-    'window_size': [2, 4, 6],
     'learning_rate': [1e-4, 1e-2],
     'num_layers': [1, 2, 3],
     'neurons_per_layer': [32, 64, 128],
