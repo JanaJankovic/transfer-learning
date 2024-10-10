@@ -71,20 +71,22 @@ def get_tl_result(json_file_path, target_country, base, commodity, path):
     return None
 
 
-def get_all_maes(json_file_path):
+def get_models_eval_metric(metric, json_file_path):
     with open(json_file_path, "r") as f:
         data = json.load(f)
 
-    return [entry["best_mae"] for entry in data]
+    return [entry["evaluation"][metric] for entry in data]
 
 
-def get_tl_all_maes(json_file_path, target_country):
+def get_tl_metrics(metric, json_file_path, target_country):
     with open(json_file_path, "r") as f:
         data = json.load(f)
 
     # Filter and return 'best_mae' for the target country
     return [
-        entry["best_mae"] for entry in data if entry.get("country") == target_country
+        entry["evaluation"][metric]
+        for entry in data
+        if entry.get("target_country") == target_country
     ]
 
 

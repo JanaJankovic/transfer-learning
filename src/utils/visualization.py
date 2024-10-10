@@ -156,20 +156,25 @@ def line_chart_values(df, scaler_filename, model_path):
     return dates, usdprice, y_pred_original
 
 
-def line_chart_prediction(axs, i, target_country, country, commodity, base=True):
-    df = pd.read_csv(c.get_countries(commodity, target_country)["processed"])
-    scaler_filename = c.get_scaler_filename(target_country, commodity)
+def line_chart_prediction(
+    axs, i, target_country, country, commodity, column, target=True
+):
+    if target:
+        df = pd.read_csv(c.get_countries(commodity, target_country)["processed"])
+        scaler_filename = c.get_scaler_filename(target_country, commodity)
+    else:
+        df = pd.read_csv(c.get_countries(commodity, country)["processed"])
+        scaler_filename = c.get_scaler_filename(country, commodity)
 
-    if base:
+    if column == 0:
+        model_path = c.get_model_filename(country, commodity)
+        title = f"Prediction plot of large model ({country})"
+    elif column == 1:
         model_path = c.get_model_filename(target_country, commodity)
         title = f"Prediction plot of small model ({target_country})"
-        column = 1
-    else:
-        model_path = c.get_tl_model_filename(
-            country, target_country, commodity, "new-layers"
-        )
+    elif column == 2:
+        model_path = c.get_tl_model_filename(country, target_country, commodity)
         title = f"Prediction plot of transfer learning model ({country})"
-        column = 2
 
     dates, usdprice, y_pred_original = line_chart_values(
         df, scaler_filename, model_path
@@ -196,9 +201,9 @@ def visualize_tl_summary(target_country, countries, commodity, title):
     fig, axs = plt.subplots(num_rows, 3, figsize=(18, 6 * num_rows))
 
     for i, (country) in enumerate(countries):
-        bar_plot_mae(axs, i, target_country, country, commodity)
-        line_chart_prediction(axs, i, target_country, country, commodity)
-        line_chart_prediction(axs, i, target_country, country, commodity, base=False)
+        line_chart_prediction(axs, i, target_country, country, commodity, 0, False)
+        line_chart_prediction(axs, i, target_country, country, commodity, 1, True)
+        line_chart_prediction(axs, i, target_country, country, commodity, 2, True)
 
     # Set the overall plot title
     fig.suptitle(title, fontsize=16)
@@ -214,32 +219,25 @@ def plot_bar_from_array(
     xlabel="X-axis",
     ylabel="Y-axis",
     target_value=None,
+    bar_width=0.8,
+    split_index=None,
 ):
-    """
-    Creates a bar plot from an array of values with corresponding labels.
 
-    :param values: List or array of numeric values for the bar heights
-    :param labels: List or array of strings for the bar labels
-    :param title: Title of the bar plot
-    :param xlabel: Label for the x-axis
-    :param ylabel: Label for the y-axis
-    """
-
-    # Check if the length of values matches the length of labels
     if len(values) != len(labels):
         raise ValueError("The length of 'values' must match the length of 'labels'.")
 
-    # Create the figure and the bar plot
-    plt.figure(figsize=(8, 6))  # Adjust the size as needed
-    indices = np.arange(len(values))  # The x locations for the bars
+    plt.figure(figsize=(8, 6))
+    indices = np.arange(len(values))
 
-    # Create the bar plot
-    plt.bar(indices, values, color="skyblue")
+    bar_colors = ["skyblue"] * len(values)
 
-    # Set the x-axis ticks to the labels
+    if split_index is not None and 0 <= split_index < len(values):
+        bar_colors[:split_index] = ["skyblue"] * split_index
+        bar_colors[split_index:] = ["orange"] * (len(values) - split_index)
+
+    plt.bar(indices, values, color=bar_colors, width=bar_width)
+
     plt.xticks(indices, labels)
-
-    # Adding labels and title
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -262,7 +260,6 @@ def plot_bar_from_array(
             linewidth=2,
             label=f"Target: {target_value}",
         )
-        # Add label for the target line
         plt.text(
             len(values) - 0.5,
             target_value + 0.0001,
@@ -271,10 +268,16 @@ def plot_bar_from_array(
             fontsize=10,
         )
 
-    plt.xticks(
-        rotation=45, ha="right"
-    )  # Rotate labels for better readability if needed
+    if split_index is not None:
+        group1_patch = plt.Rectangle((0, 0), 1, 1, fc="skyblue")
+        group2_patch = plt.Rectangle((0, 0), 1, 1, fc="orange")
+        plt.legend(
+            [group1_patch, group2_patch],
+            ["Large models", "Small models"],
+            loc="upper right",
+        )
+
+    plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
 
-    # Show the plot
     plt.show()

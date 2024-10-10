@@ -8,10 +8,10 @@ if __name__ == "__main__":
     large_datasets = ["Bangladesh", "India", "Indonesia", "Pakistan", "Tajikistan"]
     small_datasets = ["Afghanistan", "Kyrgyzstan", "SriLanka"]
 
-    # print("Training big models")
-    # train.training_pipeline(
-    #     large_datasets, commodity, c.get_large_model_results(), final=True
-    # )
+    print("Training big models")
+    train.training_pipeline(
+        large_datasets, commodity, c.get_large_model_results(), final=True
+    )
 
     print("Training small models")
     train.training_pipeline(small_datasets, commodity, c.get_small_model_results())
