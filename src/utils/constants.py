@@ -50,6 +50,20 @@ def get_countries(commodity, country=None):
         "name": "Kyrgyzstan",
         "criteria": "Rice",
     }
+
+    lao = {
+        "raw": "../data/raw/Lao-2020-2024.csv",
+        "processed": "../data/processed/Lao-2020-2024",
+        "name": "Lao",
+        "criteria": "Rice (ordinary, first quality)",
+    }
+
+    lebanon = {
+        "raw": "../data/raw/Lebanon-2012-2024.csv",
+        "processed": "../data/processed/Lebanon-2012-2024",
+        "name": "Lebanon",
+        "criteria": None,
+    }
     moldova = {
         "raw": "../data/raw/Moldova-2008-2024.csv",
         "processed": "../data/processed/Moldova-2008-2024",
@@ -73,6 +87,12 @@ def get_countries(commodity, country=None):
         "processed": "../data/processed/Pakistan-2004-2024",
         "name": "Pakistan",
         "criteria": None,
+    }
+    palestine = {
+        "raw": "../data/raw/Palestine-2007-2024.csv",
+        "processed": "../data/processed/Palestine-2007-2024",
+        "name": "Palestine",
+        "criteria": "Rice (short grain, low quality, local)",
     }
     philipines = {
         "raw": "../data/raw/Philipines-2000-2024.csv",
@@ -116,10 +136,10 @@ def get_countries(commodity, country=None):
         bangladesh,
         india,
         indonesia,
-        kyrgyzstan,
+        lao,
         pakistan,
+        palestine,
         tajikistan,
-        srilanka,
     ]
     for dataset in datasets:
         dataset["processed"] = dataset["processed"] + "-" + commodity + ".csv"

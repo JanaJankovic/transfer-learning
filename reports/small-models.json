@@ -1,59 +1,40 @@
 [
-    {
-        "country": "Afghanistan",
-        "commodity": "Rice",
-        "path": "../models/Afghanistan-Rice-best-model.h5",
-        "best_params": {
-            "batch_size": 64,
-            "network_type": "GRU",
-            "num_layers": 1,
-            "num_neurons": 16,
-            "learning_rate": 0.01,
-            "dropout_rate": 0.2
-        },
-        "evaluation": {
-            "mae": 0.05201999558342823,
-            "mse": 0.004158654969004929,
-            "epochs": 37,
-            "elapsed_time": 2.837374687194824
-        }
+  {
+    "country": "Afghanistan",
+    "commodity": "Rice",
+    "path": "../models/Afghanistan-Rice-best-model.h5",
+    "best_params": {
+      "batch_size": 64,
+      "network_type": "GRU",
+      "num_layers": 1,
+      "num_neurons": 16,
+      "learning_rate": 0.01,
+      "dropout_rate": 0.2
     },
-    {
-        "country": "Kyrgyzstan",
-        "commodity": "Rice",
-        "path": "../models/Kyrgyzstan-Rice-best-model.h5",
-        "best_params": {
-            "batch_size": 16,
-            "network_type": "GRU",
-            "num_layers": 1,
-            "num_neurons": 64,
-            "learning_rate": 0.01,
-            "dropout_rate": 0.1
-        },
-        "evaluation": {
-            "mae": 0.023618744691212994,
-            "mse": 0.0011058619490719346,
-            "epochs": 38,
-            "elapsed_time": 3.2866954803466797
-        }
-    },
-    {
-        "country": "SriLanka",
-        "commodity": "Rice",
-        "path": "../models/SriLanka-Rice-best-model.h5",
-        "best_params": {
-            "batch_size": 16,
-            "network_type": "RNN",
-            "num_layers": 2,
-            "num_neurons": 128,
-            "learning_rate": 0.01,
-            "dropout_rate": 0.1
-        },
-        "evaluation": {
-            "mae": 0.04236332729458809,
-            "mse": 0.002676142331131964,
-            "epochs": 36,
-            "elapsed_time": 3.901721954345703
-        }
+    "evaluation": {
+      "mae": 0.05201999558342823,
+      "mse": 0.004158654969004929,
+      "epochs": 37,
+      "elapsed_time": 2.837374687194824
     }
+  },
+  {
+    "country": "Lao",
+    "commodity": "Rice",
+    "path": "../models/Lao-Rice-best-model.h5",
+    "best_params": {
+      "batch_size": 16,
+      "network_type": "LSTM",
+      "num_layers": 1,
+      "num_neurons": 128,
+      "learning_rate": 0.01,
+      "dropout_rate": 0.1
+    },
+    "evaluation": {
+      "mae": 0.03771591081619261,
+      "mse": 0.0023046347682221906,
+      "epochs": 22,
+      "elapsed_time": 2.6568896770477295
+    }
+  }
 ]

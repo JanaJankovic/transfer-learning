@@ -1,182 +1,122 @@
 [
-    {
-        "country": "Bangladesh",
-        "target_country": "Afghanistan",
-        "commodity": "Rice",
-        "path": "../models/Bangladesh-Afghanistan-Rice.h5",
-        "evaluation": {
-            "mae": 0.07262461874220108,
-            "mse": 0.0075696736689793,
-            "epochs": 30,
-            "elapsed_time": 2.5499203205108643
-        }
-    },
-    {
-        "country": "India",
-        "target_country": "Afghanistan",
-        "commodity": "Rice",
-        "path": "../models/India-Afghanistan-Rice.h5",
-        "evaluation": {
-            "mae": 0.07990595489078098,
-            "mse": 0.008539921318134691,
-            "epochs": 29,
-            "elapsed_time": 2.4585859775543213
-        }
-    },
-    {
-        "country": "Indonesia",
-        "target_country": "Afghanistan",
-        "commodity": "Rice",
-        "path": "../models/Indonesia-Afghanistan-Rice.h5",
-        "evaluation": {
-            "mae": 0.049767158932156,
-            "mse": 0.00452461215472446,
-            "epochs": 45,
-            "elapsed_time": 2.781601905822754
-        }
-    },
-    {
-        "country": "Pakistan",
-        "target_country": "Afghanistan",
-        "commodity": "Rice",
-        "path": "../models/Pakistan-Afghanistan-Rice.h5",
-        "evaluation": {
-            "mae": 0.057901038275824636,
-            "mse": 0.006493095184549271,
-            "epochs": 31,
-            "elapsed_time": 2.736846446990967
-        }
-    },
-    {
-        "country": "Tajikistan",
-        "target_country": "Afghanistan",
-        "commodity": "Rice",
-        "path": "../models/Tajikistan-Afghanistan-Rice.h5",
-        "evaluation": {
-            "mae": 0.07108485857645672,
-            "mse": 0.008751161728925934,
-            "epochs": 30,
-            "elapsed_time": 2.1896681785583496
-        }
-    },
-    {
-        "country": "Bangladesh",
-        "target_country": "Kyrgyzstan",
-        "commodity": "Rice",
-        "path": "../models/Bangladesh-Kyrgyzstan-Rice.h5",
-        "evaluation": {
-            "mae": 0.1544483068557013,
-            "mse": 0.02460848491730068,
-            "epochs": 11,
-            "elapsed_time": 2.1737937927246094
-        }
-    },
-    {
-        "country": "India",
-        "target_country": "Kyrgyzstan",
-        "commodity": "Rice",
-        "path": "../models/India-Kyrgyzstan-Rice.h5",
-        "evaluation": {
-            "mae": 0.13632313042595276,
-            "mse": 0.019311961608011085,
-            "epochs": 11,
-            "elapsed_time": 1.823340892791748
-        }
-    },
-    {
-        "country": "Indonesia",
-        "target_country": "Kyrgyzstan",
-        "commodity": "Rice",
-        "path": "../models/Indonesia-Kyrgyzstan-Rice.h5",
-        "evaluation": {
-            "mae": 0.1466943670000349,
-            "mse": 0.022163350511528266,
-            "epochs": 11,
-            "elapsed_time": 1.726266860961914
-        }
-    },
-    {
-        "country": "Pakistan",
-        "target_country": "Kyrgyzstan",
-        "commodity": "Rice",
-        "path": "../models/Pakistan-Kyrgyzstan-Rice.h5",
-        "evaluation": {
-            "mae": 0.11415183743976415,
-            "mse": 0.013759152415409162,
-            "epochs": 11,
-            "elapsed_time": 1.4647204875946045
-        }
-    },
-    {
-        "country": "Tajikistan",
-        "target_country": "Kyrgyzstan",
-        "commodity": "Rice",
-        "path": "../models/Tajikistan-Kyrgyzstan-Rice.h5",
-        "evaluation": {
-            "mae": 0.07089961342584522,
-            "mse": 0.005801308367370411,
-            "epochs": 11,
-            "elapsed_time": 1.4896769523620605
-        }
-    },
-    {
-        "country": "Bangladesh",
-        "target_country": "SriLanka",
-        "commodity": "Rice",
-        "path": "../models/Bangladesh-SriLanka-Rice.h5",
-        "evaluation": {
-            "mae": 0.0645382000952959,
-            "mse": 0.005426575668851663,
-            "epochs": 15,
-            "elapsed_time": 2.057187557220459
-        }
-    },
-    {
-        "country": "India",
-        "target_country": "SriLanka",
-        "commodity": "Rice",
-        "path": "../models/India-SriLanka-Rice.h5",
-        "evaluation": {
-            "mae": 0.0666114508062601,
-            "mse": 0.005831093387707015,
-            "epochs": 15,
-            "elapsed_time": 2.079158306121826
-        }
-    },
-    {
-        "country": "Indonesia",
-        "target_country": "SriLanka",
-        "commodity": "Rice",
-        "path": "../models/Indonesia-SriLanka-Rice.h5",
-        "evaluation": {
-            "mae": 0.06615620170533656,
-            "mse": 0.005707420076617634,
-            "epochs": 16,
-            "elapsed_time": 1.5893783569335938
-        }
-    },
-    {
-        "country": "Pakistan",
-        "target_country": "SriLanka",
-        "commodity": "Rice",
-        "path": "../models/Pakistan-SriLanka-Rice.h5",
-        "evaluation": {
-            "mae": 0.05979406681656838,
-            "mse": 0.004757700773965794,
-            "epochs": 12,
-            "elapsed_time": 1.478548288345337
-        }
-    },
-    {
-        "country": "Tajikistan",
-        "target_country": "SriLanka",
-        "commodity": "Rice",
-        "path": "../models/Tajikistan-SriLanka-Rice.h5",
-        "evaluation": {
-            "mae": 0.0581413473635912,
-            "mse": 0.004543053465764833,
-            "epochs": 18,
-            "elapsed_time": 1.790048360824585
-        }
+  {
+    "country": "Bangladesh",
+    "target_country": "Afghanistan",
+    "commodity": "Rice",
+    "path": "../models/Bangladesh-Afghanistan-Rice.h5",
+    "evaluation": {
+      "mae": 0.07262461874220108,
+      "mse": 0.0075696736689793,
+      "epochs": 30,
+      "elapsed_time": 2.5499203205108643
     }
+  },
+  {
+    "country": "India",
+    "target_country": "Afghanistan",
+    "commodity": "Rice",
+    "path": "../models/India-Afghanistan-Rice.h5",
+    "evaluation": {
+      "mae": 0.07990595489078098,
+      "mse": 0.008539921318134691,
+      "epochs": 29,
+      "elapsed_time": 2.4585859775543213
+    }
+  },
+  {
+    "country": "Indonesia",
+    "target_country": "Afghanistan",
+    "commodity": "Rice",
+    "path": "../models/Indonesia-Afghanistan-Rice.h5",
+    "evaluation": {
+      "mae": 0.049767158932156,
+      "mse": 0.00452461215472446,
+      "epochs": 45,
+      "elapsed_time": 2.781601905822754
+    }
+  },
+  {
+    "country": "Pakistan",
+    "target_country": "Afghanistan",
+    "commodity": "Rice",
+    "path": "../models/Pakistan-Afghanistan-Rice.h5",
+    "evaluation": {
+      "mae": 0.057901038275824636,
+      "mse": 0.006493095184549271,
+      "epochs": 31,
+      "elapsed_time": 2.736846446990967
+    }
+  },
+  {
+    "country": "Tajikistan",
+    "target_country": "Afghanistan",
+    "commodity": "Rice",
+    "path": "../models/Tajikistan-Afghanistan-Rice.h5",
+    "evaluation": {
+      "mae": 0.07108485857645672,
+      "mse": 0.008751161728925934,
+      "epochs": 30,
+      "elapsed_time": 2.1896681785583496
+    }
+  },
+  {
+    "country": "Bangladesh",
+    "target_country": "Lao",
+    "commodity": "Rice",
+    "path": "../models/Bangladesh-Lao-Rice.h5",
+    "evaluation": {
+      "mae": 0.05225798382759093,
+      "mse": 0.0038676774258931887,
+      "epochs": 16,
+      "elapsed_time": 2.0265817642211914
+    }
+  },
+  {
+    "country": "India",
+    "target_country": "Lao",
+    "commodity": "Rice",
+    "path": "../models/India-Lao-Rice.h5",
+    "evaluation": {
+      "mae": 0.06362365498542784,
+      "mse": 0.005143372076056514,
+      "epochs": 19,
+      "elapsed_time": 2.0810482501983643
+    }
+  },
+  {
+    "country": "Indonesia",
+    "target_country": "Lao",
+    "commodity": "Rice",
+    "path": "../models/Indonesia-Lao-Rice.h5",
+    "evaluation": {
+      "mae": 0.05469530119895934,
+      "mse": 0.004137858883129329,
+      "epochs": 21,
+      "elapsed_time": 1.8422620296478271
+    }
+  },
+  {
+    "country": "Pakistan",
+    "target_country": "Lao",
+    "commodity": "Rice",
+    "path": "../models/Pakistan-Lao-Rice.h5",
+    "evaluation": {
+      "mae": 0.08403934850692747,
+      "mse": 0.008787170354912634,
+      "epochs": 18,
+      "elapsed_time": 1.691756248474121
+    }
+  },
+  {
+    "country": "Tajikistan",
+    "target_country": "Lao",
+    "commodity": "Rice",
+    "path": "../models/Tajikistan-Lao-Rice.h5",
+    "evaluation": {
+      "mae": 0.06720562591552733,
+      "mse": 0.005888529970526622,
+      "epochs": 18,
+      "elapsed_time": 1.7963261604309082
+    }
+  }
 ]
