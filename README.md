@@ -73,12 +73,12 @@ For the data from `Afghanistan, Lao` the transfer learning was exectued in the f
 #### TL metrics for Afghanistan
 
 <p align="center">
-  <img src="img/af-mae.png" alt="Image 1" width="300"/>
-  <img src="img/af-mse.png" alt="Image 2" width="300"/>
+  <img src="img/af-mae.png" alt="Image 1" width="400"/>
+  <img src="img/af-mse.png" alt="Image 2" width="400"/>
 </p>
 <p align="center">
-  <img src="img/af-time.png" alt="Image 3" width="300"/>
-  <img src="img/af-epochs.png" alt="Image 4" width="300"/>
+  <img src="img/af-time.png" alt="Image 3" width="400"/>
+  <img src="img/af-epochs.png" alt="Image 4" width="400"/>
 </p>
 
 #### TL summary for Afghanistan
@@ -90,12 +90,12 @@ For the data from `Afghanistan, Lao` the transfer learning was exectued in the f
 #### TL metrics for Lao
 
 <p align="center">
-  <img src="img/lao-mae.png" alt="Image 1" width="300"/>
-  <img src="img/lao-mse.png" alt="Image 2" width="300"/>
+  <img src="img/lao-mae.png" alt="Image 1" width="400"/>
+  <img src="img/lao-mse.png" alt="Image 2" width="400"/>
 </p>
 <p align="center">
-  <img src="img/lao-time.png" alt="Image 3" width="300"/>
-  <img src="img/lao-epochs.png" alt="Image 4" width="300"/>
+  <img src="img/lao-time.png" alt="Image 3" width="400"/>
+  <img src="img/lao-epochs.png" alt="Image 4" width="400"/>
 </p>
 
 #### TL summary for Lao
@@ -108,4 +108,3 @@ For the data from `Afghanistan, Lao` the transfer learning was exectued in the f
 
 <p align="center">
 <img src="img/ukraine.png" alt="Example Image" width="500"/>
-</p>
