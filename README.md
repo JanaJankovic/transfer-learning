@@ -12,24 +12,22 @@ During the data preparation following measures were taken:
 - Only groceries for retail were considered
 - Price of grocery was averaged if it was in multiple cities
 - Column `usdprice` was chosen for forecasting
-- Datasets were selected based on existance of the same grocery
+- Datasets were selected from the same continent based on existance of the same grocery in the category of retail price, whole sale prices were not considered
 - Large datasets are considered to have more than 15 years of data
 - Small datasets are considered to have have less than 10
-- Other choice of datasets was random, in the sense that criteria for the country wasn't considered
 
 ### Line plot of prices for Rice based on given criteria
 
-<img src="img/prices.png" alt="Example Image" height="1000"/>
+<p align="center">
+    <img src="img/1.png" alt="Example Image" height="1000"/>
+</p>
 
 After analyzing line plots, following actions were taken:
 
-- `Iran` had exponential growth in price and wasn't considered for next stage
-- `Moldova` has data from the last 2 years, which isn't enough data
-- `Turkey` is the only country where the price of grocery is dropping so it wasn't considered for next stage
-- `Bangladesh, India, Indonesia, Nepal, Pakistan, Philipines, Senegal` are used for pretraining models, since they have bigger dataset
-- `Argentina, Nigeria, Ukraine` are used for transfer learning, since datasets are smaller
+- `Bangladesh, India, Indonesia, Pakistan, Tajikistan` are used for pretraining models, since they have bigger dataset (20 yrs)
+- `Afghanistan, Lao` are used for transfer learning, since datasets are smaller (4 years)
 
-During the preprocessing nothing else was done on the data, except for sorting and using `StandardScaler` before training.
+During the preprocessing nothing else was done on the data, except for sorting and using `MinMaxScaler` before training.
 
 💡 Entire process is visible at [data.ipynb](src/data.ipynb). 💡
 
@@ -49,65 +47,65 @@ param_grid = {
 }
 ```
 
-At first, `random search` was utilized and the process of trainig and evaluating was exectued in 500 iterations. However, because of the time complexity it was replaced with `bayesian search` using `optuna` library and it was exectuted in 200 iterations.
+Using `bayesian search` within `optuna` library was utilized for finding hyperparameters and it was exectuted in 500 iterations.
 
 💡 All the results visible at [model.ipynb](src/model.ipynb). 💡
 
-#### Result of training larger models using bayesian search of parameter grid
+#### Result of training models using bayesian search of parameter grid
 
-<img src="img/large-models.png" alt="Example Image" width="500"/>
+<p align="center">
+<img src="img/mae-models.png" alt="Example Image" width="500"/>
+</p>
 
-#### Result of training smaller models using bayesian search of parameter grid
-
-<img src="img/small-models.png" alt="Example Image" width="500"/>
+<p align="center">
+<img src="img/mse-models.png" alt="Example Image" width="500"/>
+</p>
 
 ## Transfer learning
 
-For the data from `Argentina, Nigeria, Ukraine` the transfer learning was exectued in the following way:
+For the data from `Afghanistan, Lao` the transfer learning was exectued in the following way:
 
 - Pretrained models were loaded
 - Last `Dense` layer was removed
 - All remaining layers were frozen
-- New grid search was executed using the same parameters
-- New layers were added based on bayesian search (200 iterations)
+- New `Dense` layer was added and trained with hyperparameters of loaded model
 
-#### Results for MAE Argentina
+#### TL metrics for Afghanistan
 
-The red line is MAE performed by original model.
+<p align="center">
+  <img src="img/af-mae.png" alt="Image 1" width="300"/>
+  <img src="img/af-mse.png" alt="Image 2" width="300"/>
+</p>
+<p align="center">
+  <img src="img/af-time.png" alt="Image 3" width="300"/>
+  <img src="img/af-epochs.png" alt="Image 4" width="300"/>
+</p>
 
-<img src="img/argentina.png" alt="Example Image" width="500"/>
+#### TL summary for Afghanistan
 
-#### Results for MAE Nigeria
+<p align="center">
+<img src="img/af-summary.png" alt="Example Image" height="1000"/>
+</p>
 
-The red line is MAE performed by original model.
+#### TL metrics for Lao
 
-<img src="img/nigeria.png" alt="Example Image" width="500"/>
+<p align="center">
+  <img src="img/lao-mae.png" alt="Image 1" width="300"/>
+  <img src="img/lao-mse.png" alt="Image 2" width="300"/>
+</p>
+<p align="center">
+  <img src="img/lao-time.png" alt="Image 3" width="300"/>
+  <img src="img/lao-epochs.png" alt="Image 4" width="300"/>
+</p>
 
-#### Results for MAE Ukraine
+#### TL summary for Lao
 
-The red line is MAE performed by original model.
+<p align="center">
+<img src="img/lao-summary.png" alt="Example Image" height="1000"/>
+</p>
 
+#### Case proof: Results for MAE Ukraine
+
+<p align="center">
 <img src="img/ukraine.png" alt="Example Image" width="500"/>
-
-## Summary of all transfer learning models
-
-#### Argentina Rice 2016-2022
-
-<img src="img/summary-argentina.png" alt="Example Image" width="500"/>
-
-#### Nigeria Rice 2014-2024
-
-<img src="img/summary-nigeria.png" alt="Example Image" width="500"/>
-
-#### Ukraine Rice 2014-2023
-
-<img src="img/summary-ukraine.png" alt="Example Image" width="500"/>
-
-## Questions & suggestions
-
-- Random search found better results, because it took 500 iterations. Would increasing the number of the iterations lower MAE and should it be done?
-- Is there a different method of doing transfer learning, besides freezing layers? On example a method from this [study](https://www.sciencedirect.com/science/article/pii/S0893608019302217)
-- Was there a mistake with randomly selecting countries and should there be a specific criteria?
-- The largest dataset has 360 samples, which is small amount for RNN. Is there a need for more frequent interval for price change? On example weekly intervals?
-- Used dataset has no information on how the `usdprice` is calculated, should there be a calculation based on devaluation of the original currency?
-- Should this method be applied to another grocery? If yes, should it be done from the same datasets or can it be from new?
+</p>

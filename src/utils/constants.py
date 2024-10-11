@@ -138,7 +138,6 @@ def get_countries(commodity, country=None):
         indonesia,
         lao,
         pakistan,
-        palestine,
         tajikistan,
     ]
     for dataset in datasets:
