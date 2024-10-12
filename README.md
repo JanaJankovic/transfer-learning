@@ -1,5 +1,28 @@
 # Utilization of transfer learning with recurrent neural networks for grocery price forecasting
 
+## Market rice price inside Pakistan
+
+<p align="center">
+    <img src="img/markets.png" alt="Example Image" height="200"/>
+</p>
+
+### Training and transfer learning results
+
+<p align="center">
+  <img src="img/market-mae.png" alt="Image 1" width="400"/>
+  <img src="img/market-mape.png" alt="Image 2" width="400"/>
+</p>
+<p align="center">
+  <img src="img/market-time.png" alt="Image 3" width="400"/>
+  <img src="img/market-epochs.png" alt="Image 4" width="400"/>
+</p>
+
+### Training and transfer learning plot
+
+<p align="center">
+    <img src="img/market-tl.png" alt="Example Image" height="300"/>
+</p>
+
 ## Dataset
 
 Datasets are taken from [WPF Food Market Price](https://data.humdata.org/dataset/?q=food+prices&sort=last_modified+desc&ext_page_size=25&page=3). Values are updated monthly.
@@ -54,11 +77,12 @@ Using `bayesian search` within `optuna` library was utilized for finding hyperpa
 #### Result of training models using bayesian search of parameter grid
 
 <p align="center">
-<img src="img/mae-models.png" alt="Example Image" width="500"/>
+<img src="img/mae-models.png" alt="Example Image" width="400"/>
+<img src="img/mape-models.png" alt="Example Image" width="400"/>
 </p>
 
 <p align="center">
-<img src="img/mape-models.png" alt="Example Image" width="500"/>
+
 </p>
 
 ## Transfer learning
