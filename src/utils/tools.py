@@ -29,6 +29,16 @@ def write_results(json_file_path, new_data):
                 and entry["commodity"] == new_data["commodity"]
             )
         ]
+    elif "market" in new_data:
+        data = [
+            entry
+            for entry in data
+            if not (
+                entry["market"] == new_data["market"]
+                and entry["country"] == new_data["country"]
+                and entry["commodity"] == new_data["commodity"]
+            )
+        ]
     else:
         data = [
             entry
@@ -45,25 +55,34 @@ def write_results(json_file_path, new_data):
         json.dump(data, f, default=numpy_converter, indent=4)
 
 
-def get_result(json_file_path, country, commodity):
+def get_result(json_file_path, country, commodity, market=None):
     with open(json_file_path, "r") as f:
         data = json.load(f)
 
     for entry in data:
-        if entry["country"] == country and entry["commodity"] == commodity:
+        search_criteria = (
+            entry["country"] == country and entry["commodity"] == commodity
+        )
+        if market is not None:
+            search_criteria = (
+                entry["country"] == country
+                and entry["commodity"] == commodity
+                and entry["market"] == market
+            )
+        if search_criteria:
             return entry
 
     return None
 
 
-def get_tl_result(json_file_path, target_country, base, commodity, path):
+def get_tl_result(json_file_path, target_country, country, commodity):
     with open(json_file_path, "r") as f:
         data = json.load(f)
 
     for entry in data:
         if (
-            entry["country"] == target_country
-            and entry["base"] == base
+            entry["target_country"] == target_country
+            and entry["country"] == country
             and entry["commodity"] == commodity
         ):
             return entry
@@ -102,7 +121,6 @@ def get_all_metrics(target_country, country, commodity):
         target_country,
         country,
         commodity,
-        c.get_tl_model_filename(country, target_country, commodity, "new-layers"),
     )["best_mae"]
 
     return [country_mae, target_country_mae, tl_mae]

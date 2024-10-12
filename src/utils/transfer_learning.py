@@ -60,7 +60,7 @@ def transfer_learning(
     end_time = time.time()
 
     y_pred = new_model.predict(X_test, verbose=0)
-    mae, mse = eval.load_scaler_and_evaluate(
+    mae, mse, mape = eval.load_scaler_and_evaluate(
         scaler_path,
         y_test,
         y_pred.reshape(
@@ -70,7 +70,7 @@ def transfer_learning(
 
     elapsed_time = end_time - start_time
 
-    return new_model, mae, mse, len(history.epoch), elapsed_time
+    return new_model, mae, mse, mape, len(history.epoch), elapsed_time
 
 
 def transfer_learning_pipeline(target_country, countries, commodity, json_path):
@@ -83,7 +83,7 @@ def transfer_learning_pipeline(target_country, countries, commodity, json_path):
         )
         params = tls.get_result(c.get_large_model_results(), country, commodity)
 
-        model, mae, mse, epochs, elapsed_time = transfer_learning(
+        model, mae, mse, mape, epochs, elapsed_time = transfer_learning(
             df,
             params["best_params"],
             pretrained_model,
@@ -100,9 +100,48 @@ def transfer_learning_pipeline(target_country, countries, commodity, json_path):
             "evaluation": {
                 "mae": mae,
                 "mse": mse,
+                "mape": mape,
                 "epochs": epochs,
                 "elapsed_time": elapsed_time,
             },
         }
 
         tls.write_results(json_path, result)
+
+
+def transfer_learning_market_pipeline(
+    country, commodity, market_target, market_source, json_path
+):
+    scaler_path = c.get_scaler_filename(market_target, commodity)
+    df = pd.read_csv(c.get_market_data(market_target))
+
+    pretrained_model = load_model(
+        c.get_model_filename(country, commodity, final=True, market=market_source)
+    )
+    params = tls.get_result(
+        c.get_market_results(), country, commodity, market=market_source
+    )
+    model, mae, mse, mape, epochs, elapsed_time = transfer_learning(
+        df,
+        params["best_params"],
+        pretrained_model,
+        scaler_path,
+    )
+
+    model.save(c.get_tl_model_filename(market_source, market_target, commodity))
+
+    result = {
+        "country": market_source,
+        "target_country": market_target,
+        "commodity": commodity,
+        "path": c.get_tl_model_filename(market_source, market_target, commodity),
+        "evaluation": {
+            "mae": mae,
+            "mse": mse,
+            "mape": mape,
+            "epochs": epochs,
+            "elapsed_time": elapsed_time,
+        },
+    }
+
+    tls.write_results(json_path, result)

@@ -1,0 +1,15 @@
+[
+    {
+        "country": "Quetta",
+        "target_country": "Karachi",
+        "commodity": "Rice",
+        "path": "../models/Quetta-Karachi-Rice.h5",
+        "evaluation": {
+            "mae": 0.03972045221924781,
+            "mse": 0.0029552319472853105,
+            "mape": 0.05720226140433743,
+            "epochs": 17,
+            "elapsed_time": 2.2622005939483643
+        }
+    }
+]

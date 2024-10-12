@@ -1,0 +1,44 @@
+[
+    {
+        "country": "Pakistan",
+        "commodity": "Rice",
+        "path": "../models/Market-Quetta-best-model.h5",
+        "best_params": {
+            "batch_size": 16,
+            "network_type": "LSTM",
+            "num_layers": 1,
+            "num_neurons": 32,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.1
+        },
+        "evaluation": {
+            "mae": 0.026838649113972973,
+            "mse": 0.0013867926802798153,
+            "mape": 0.03906950185902754,
+            "epochs": 14,
+            "elapsed_time": 3.1504299640655518
+        },
+        "market": "Quetta"
+    },
+    {
+        "country": "Pakistan",
+        "commodity": "Rice",
+        "path": "../models/Market-Karachi-best-model.h5",
+        "best_params": {
+            "batch_size": 16,
+            "network_type": "LSTM",
+            "num_layers": 1,
+            "num_neurons": 32,
+            "learning_rate": 0.01,
+            "dropout_rate": 0.1
+        },
+        "evaluation": {
+            "mae": 0.026407155911127727,
+            "mse": 0.0013308113954802697,
+            "mape": 0.040259789156842286,
+            "epochs": 18,
+            "elapsed_time": 2.7143445014953613
+        },
+        "market": "Karachi"
+    }
+]

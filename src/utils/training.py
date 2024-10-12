@@ -79,7 +79,7 @@ def objective(trial, df, scaler_path):
     )
 
     y_pred = model.predict(X_test)
-    test_mae, _ = eval.load_scaler_and_evaluate(
+    test_mae, _, _ = eval.load_scaler_and_evaluate(
         scaler_path,
         y_test,
         y_pred.reshape(
@@ -90,10 +90,15 @@ def objective(trial, df, scaler_path):
     return test_mae
 
 
-def bayesian_optimization_params(commodity, country, n_trials):
+def bayesian_optimization_params(commodity, country, n_trials, market=None):
     study = optuna.create_study(direction="minimize")
-    df = pd.read_csv(c.get_countries(commodity, country)["processed"])
-    scaler_path = c.get_scaler_filename(country, commodity)
+
+    if market is not None:
+        df = pd.read_csv(c.get_market_data(market))
+        scaler_path = c.get_scaler_filename(market, commodity)
+    else:
+        df = pd.read_csv(c.get_countries(commodity, country)["processed"])
+        scaler_path = c.get_scaler_filename(country, commodity)
 
     study.optimize(lambda trial: objective(trial, df, scaler_path), n_trials=n_trials)
 
@@ -130,7 +135,7 @@ def train_save_evaluate_model(df, model_path, best_params, scaler_path):
     model.save(model_path)
 
     y_pred = model.predict(X_test)
-    mae, mse = eval.load_scaler_and_evaluate(
+    mae, mse, mape = eval.load_scaler_and_evaluate(
         scaler_path,
         y_test,
         y_pred.reshape(
@@ -139,7 +144,7 @@ def train_save_evaluate_model(df, model_path, best_params, scaler_path):
     )
 
     elapsed_time = end_time - start_time
-    return mae, mse, len(history.epoch), elapsed_time
+    return mae, mse, mape, len(history.epoch), elapsed_time
 
 
 def final_training(df, best_params, epochs, model_path):
@@ -158,26 +163,34 @@ def final_training(df, best_params, epochs, model_path):
     model.save(model_path)
 
 
-def training_pipeline(countries, commodity, json_path, final=False, n_trials=500):
+def training_pipeline(
+    countries, commodity, json_path, final=False, n_trials=500, market=None
+):
     for country in countries:
-        best_params = bayesian_optimization_params(commodity, country, n_trials)
-        model_path = c.get_model_filename(country, commodity, final=False)
-        df = pd.read_csv(c.get_countries(commodity, country)["processed"])
+        best_params = bayesian_optimization_params(commodity, country, n_trials, market)
 
-        mae, mse, epochs, elapsed_time = train_save_evaluate_model(
-            df,
-            model_path,
-            best_params,
-            c.get_scaler_filename(country, commodity),
+        if market is not None:
+            model_path = c.get_model_filename(
+                country, commodity, final=False, market=market
+            )
+            df = pd.read_csv(c.get_market_data(market))
+            final_model_path = c.get_model_filename(
+                country, commodity, final=True, market=market
+            )
+            scalar_path = c.get_scaler_filename(market, commodity)
+
+        else:
+            model_path = c.get_model_filename(country, commodity, final=False)
+            df = pd.read_csv(c.get_countries(commodity, country)["processed"])
+            final_model_path = c.get_model_filename(country, commodity, final=True)
+            scalar_path = c.get_scaler_filename(country, commodity)
+
+        mae, mse, mape, epochs, elapsed_time = train_save_evaluate_model(
+            df, model_path, best_params, scalar_path
         )
 
         if final:
-            final_training(
-                df,
-                best_params,
-                epochs,
-                c.get_model_filename(country, commodity, final=True),
-            )
+            final_training(df, best_params, epochs, final_model_path)
 
         result = {
             "country": country,
@@ -187,9 +200,13 @@ def training_pipeline(countries, commodity, json_path, final=False, n_trials=500
             "evaluation": {
                 "mae": mae,
                 "mse": mse,
+                "mape": mape,
                 "epochs": epochs,
                 "elapsed_time": elapsed_time,
             },
         }
+
+        if market is not None:
+            result["market"] = market
 
         tls.write_results(json_path, result)

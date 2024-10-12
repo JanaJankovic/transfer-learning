@@ -58,7 +58,7 @@ Using `bayesian search` within `optuna` library was utilized for finding hyperpa
 </p>
 
 <p align="center">
-<img src="img/mse-models.png" alt="Example Image" width="500"/>
+<img src="img/mape-models.png" alt="Example Image" width="500"/>
 </p>
 
 ## Transfer learning
@@ -74,7 +74,7 @@ For the data from `Afghanistan, Lao` the transfer learning was exectued in the f
 
 <p align="center">
   <img src="img/af-mae.png" alt="Image 1" width="400"/>
-  <img src="img/af-mse.png" alt="Image 2" width="400"/>
+  <img src="img/af-mape.png" alt="Image 2" width="400"/>
 </p>
 <p align="center">
   <img src="img/af-time.png" alt="Image 3" width="400"/>
@@ -91,7 +91,7 @@ For the data from `Afghanistan, Lao` the transfer learning was exectued in the f
 
 <p align="center">
   <img src="img/lao-mae.png" alt="Image 1" width="400"/>
-  <img src="img/lao-mse.png" alt="Image 2" width="400"/>
+  <img src="img/lao-mape.png" alt="Image 2" width="400"/>
 </p>
 <p align="center">
   <img src="img/lao-time.png" alt="Image 3" width="400"/>

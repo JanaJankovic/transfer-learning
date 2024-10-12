@@ -106,13 +106,7 @@ def plot_tl_evaluations(
     for country in countries:
         df = pd.read_csv(c.get_countries(commodity, target_country)["processed"])
         base_data = tls.get_result(json_path, country, commodity)
-        tl_data = tls.get_tl_result(
-            json_tl_path,
-            target_country,
-            country,
-            commodity,
-            c.get_tl_model_filename(country, target_country, commodity, type),
-        )
+        tl_data = tls.get_tl_result(json_tl_path, target_country, country, commodity)
         model = load_model(tl_data["path"])
 
         plot_model_prediction(
@@ -156,29 +150,84 @@ def line_chart_values(df, scaler_filename, model_path):
     return dates, usdprice, y_pred_original
 
 
-def line_chart_prediction(
-    axs, i, target_country, country, commodity, column, target=True
-):
-    if target:
-        df = pd.read_csv(c.get_countries(commodity, target_country)["processed"])
-        scaler_filename = c.get_scaler_filename(target_country, commodity)
-    else:
-        df = pd.read_csv(c.get_countries(commodity, country)["processed"])
-        scaler_filename = c.get_scaler_filename(country, commodity)
+def get_option(target_country, country, commodity, index):
+    if index == 0:
+        option = {
+            "index": 0,
+            "column": 0,
+            "title": f"Prediction plot of large model ({country})",
+            "data": c.get_country(country, commodity)["processed"],
+            "model": c.get_model_filename(country, commodity),
+            "scaler": c.get_scaler_filename(country, commodity),
+        }
+    elif index == 1:
+        option = {
+            "index": 1,
+            "column": 1,
+            "title": f"Prediction plot of small model ({target_country})",
+            "data": c.get_country(target_country, commodity)["processed"],
+            "model": c.get_model_filename(target_country, commodity),
+            "scaler": c.get_scaler_filename(target_country, commodity),
+        }
 
-    if column == 0:
-        model_path = c.get_model_filename(country, commodity)
-        title = f"Prediction plot of large model ({country})"
-    elif column == 1:
-        model_path = c.get_model_filename(target_country, commodity)
-        title = f"Prediction plot of small model ({target_country})"
-    elif column == 2:
-        model_path = c.get_tl_model_filename(country, target_country, commodity)
-        title = f"Prediction plot of transfer learning model ({country})"
+    elif index == 2:
+        option = {
+            "index": 2,
+            "column": 2,
+            "title": f"Prediction plot of transfer learning model ({country})",
+            "data": c.get_country(target_country, commodity)["processed"],
+            "model": c.get_tl_model_filename(country, target_country, commodity),
+            "scaler": c.get_scaler_filename(target_country, commodity),
+        }
+    elif index == 3:
+        option = {
+            "index": 3,
+            "column": 0,
+            "title": f"Prediction plot of market model ({country})",
+            "data": c.get_market_data(country),
+            "model": c.get_model_filename(country, commodity, market=country),
+            "scaler": c.get_scaler_filename(country, commodity),
+        }
+    elif index == 4:
+        option = {
+            "index": 4,
+            "column": 1,
+            "title": f"Prediction plot of market model ({target_country})",
+            "data": c.get_market_data(target_country),
+            "model": c.get_model_filename(
+                target_country, commodity, market=target_country
+            ),
+            "scaler": c.get_scaler_filename(target_country, commodity),
+        }
+    elif index == 5:
+        option = {
+            "index": 5,
+            "column": 2,
+            "title": f"Prediction plot of transfer learning model ({country})",
+            "data": c.get_market_data(target_country),
+            "model": c.get_tl_model_filename(country, target_country, commodity),
+            "scaler": c.get_scaler_filename(target_country, commodity),
+        }
+
+    return option
+
+
+def line_chart_prediction(axs, i, target_country, country, commodity, index):
+
+    option = get_option(target_country, country, commodity, index)
+    print(option)
+
+    column = option["column"]
+    title = option["title"]
+    df = pd.read_csv(option["data"])
+    model_path = option["model"]
+    scaler_filename = option["scaler"]
 
     dates, usdprice, y_pred_original = line_chart_values(
         df, scaler_filename, model_path
     )
+
+    print(i, column)
 
     axs[i, column].plot(dates, usdprice, label="Actual data", color="blue", linewidth=1)
     axs[i, column].plot(
@@ -195,15 +244,19 @@ def line_chart_prediction(
     axs[i, column].tick_params(axis="x", rotation=45)
 
 
-def visualize_tl_summary(target_country, countries, commodity, title):
+def visualize_tl_summary(target_country, countries, commodity, title, market=False):
     num_rows = len(countries)
 
     fig, axs = plt.subplots(num_rows, 3, figsize=(18, 6 * num_rows))
+    if num_rows == 1:
+        axs = np.atleast_2d(axs)
+
+    oi = 3 if market else 0
 
     for i, (country) in enumerate(countries):
-        line_chart_prediction(axs, i, target_country, country, commodity, 0, False)
-        line_chart_prediction(axs, i, target_country, country, commodity, 1, True)
-        line_chart_prediction(axs, i, target_country, country, commodity, 2, True)
+        line_chart_prediction(axs, i, target_country, country, commodity, oi)
+        line_chart_prediction(axs, i, target_country, country, commodity, oi + 1)
+        line_chart_prediction(axs, i, target_country, country, commodity, oi + 2)
 
     # Set the overall plot title
     fig.suptitle(title, fontsize=16)
@@ -220,13 +273,15 @@ def plot_bar_from_array(
     ylabel="Y-axis",
     target_value=None,
     bar_width=0.8,
+    figsize=(8, 6),
     split_index=None,
+    legend_titles=["Large models", "Small models"],
 ):
 
     if len(values) != len(labels):
         raise ValueError("The length of 'values' must match the length of 'labels'.")
 
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=figsize)
     indices = np.arange(len(values))
 
     bar_colors = ["skyblue"] * len(values)
@@ -273,8 +328,8 @@ def plot_bar_from_array(
         group2_patch = plt.Rectangle((0, 0), 1, 1, fc="orange")
         plt.legend(
             [group1_patch, group2_patch],
-            ["Large models", "Small models"],
-            loc="upper right",
+            legend_titles,
+            loc="lower right",
         )
 
     plt.xticks(rotation=45, ha="right")
